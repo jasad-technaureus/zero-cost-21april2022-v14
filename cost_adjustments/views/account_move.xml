@@ -1,0 +1,16 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="auto_receipt_account_move_view" model="ir.ui.view">
+        <field name="name">auto.receipt.account.move.view</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_draft']" position="attributes">
+                <attribute name="attrs">{'invisible': [('show_reset_to_draft_button', '=',
+                    False)]}
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

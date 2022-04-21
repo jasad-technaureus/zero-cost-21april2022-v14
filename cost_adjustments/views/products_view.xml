@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="ca_product_category_view" model="ir.ui.view">
+        <field name="name">ca.product.category.view</field>
+        <field name="model">product.category</field>
+        <field name="inherit_id" ref="product.product_category_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_account_creditor_price_difference_categ']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="ca_product_product_view" model="ir.ui.view">
+        <field name="name">ca.product.product.view</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_account_creditor_price_difference']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+        <!--            <xpath expr="//field[@name='action_update_quantity_on_hand']" position="after">-->
+        <!--                <button string="Adjust Cost" type="object" name="cost_adjust"/>-->
+        <!--            </xpath>-->
+        <!--        </field>-->
+    </record>
+
+    <record id="ca_product_product_view_inherit" model="ir.ui.view">
+        <field name="name">ca.product.product.view.inherit</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <button name="action_update_quantity_on_hand" position="after">
+                <button string="Adjust Cost" type="object" name="cost_adjust"/>
+            </button>
+        </field>
+    </record>
+    <!--    <record id="ca_product_template_view_inherit" model="ir.ui.view">-->
+    <!--        <field name="name">ca.product.product.view.inherit</field>-->
+    <!--        <field name="model">product.product</field>-->
+    <!--        <field name="inherit_id" ref="product.product_normal_form_view"/>-->
+    <!--        <field name="arch" type="xml">-->
+    <!--            <button name="action_update_quantity_on_hand" position="after">-->
+    <!--                <button string="Adjust Cost" type="object" name="cost_adjust"/>-->
+    <!--            </button>-->
+    <!--        </field>-->
+    <!--    </record>-->
+
+    <record id="ca_product_template_view" model="ir.ui.view">
+        <field name="name">ca.product.template.view</field>
+        <field name="model">product.template</field>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='property_account_creditor_price_difference']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+            <button name="action_update_quantity_on_hand" position="after">
+                <button string="Adjust Cost" type="object" name="cost_adjust"
+                        attrs="{'invisible': ['|', ('attribute_line_ids', '&gt;=', 0), ('is_product_variant', '=', False)]}"/>
+
+            </button>
+        </field>
+    </record>
+
+</odoo>

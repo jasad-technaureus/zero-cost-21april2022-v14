@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_project_task_form_fsm_btn" model="ir.ui.view">
+        <field name="name">fsm.project.task.form.btn</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_fsm_validate'][hasclass('btn-secondary')]" position="replace">
+                <button onclick="myDoneBtn1()" id="fsm_mark_btn_id_s" class="btn-secondary fsm_class_sec" name="action_fsm_validate" type="object"
+                        string="Mark as done"
+                        attrs="{'invisible': [('display_mark_as_done_secondary', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//button[@name='action_fsm_validate'][hasclass('btn-primary')]" position="replace">
+                <button onclick="myDoneBtn2()" id="fsm_mark_btn_id_p" class="btn-primary fsm_class_pri" name="action_fsm_validate" type="object"
+                        string="Mark as done"
+                        attrs="{'invisible': [('display_mark_as_done_primary', '=', False)]}"/>
+            </xpath>
+        </field>
+    </record>
+
+    <record id="view_project_task_form_fsm" model="ir.ui.view">
+        <field name="name">fsm.project.task.form</field>
+        <field name="model">project.task</field>
+        <field name="inherit_id" ref="project.view_task_form2"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='extra_info']" position="after">
+                <page name="location_info" string="Location Info"
+                      groups="fsm_location_tracking.group_fsm_track_location">
+                    <group>
+                        <field name="id"/>
+                        <field name="partner_latitude_fsm" string="Partner Latitude"
+                               groups="fsm_location_tracking.group_fsm_track_location"/>
+                        <field name="partner_longitude_fsm" string="Partner Longitude"
+                               groups="fsm_location_tracking.group_fsm_track_location"/>
+                    </group>
+                    <group>
+                        <field name="task_latitude_fsm" string="Task Latitude"
+                               groups="fsm_location_tracking.group_fsm_track_location"/>
+                        <field name="task_longitude_fsm" string="Task Longitude"
+                               groups="fsm_location_tracking.group_fsm_track_location"/>
+                        <field name="onsite" string="Onsite" groups="fsm_location_tracking.group_fsm_track_location"/>
+                    </group>
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

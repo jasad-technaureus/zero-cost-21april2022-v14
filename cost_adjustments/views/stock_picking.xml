@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="ca_view_picking_form" model="ir.ui.view">
+        <field name="name">ca.stock.picking.view</field>
+        <field name="model">stock.picking</field>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="attrs">{'invisible': [('state', 'not in', ('assigned','done','confirmed',
+                    'partially_available', 'draft', 'waiting'))]}
+                </attribute>
+            </xpath>
+        </field>
+
+    </record>
+    <record id="ca_view_stock_landed_cost_form" model="ir.ui.view">
+        <field name="name">ca.stock.picking.view</field>
+        <field name="model">stock.landed.cost</field>
+        <field name="inherit_id" ref="stock_landed_costs.view_stock_landed_cost_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='button_cancel']" position="attributes">
+                <attribute name="attrs">{'invisible': [('state', 'not in', ('done','draft'))]}
+                </attribute>
+            </xpath>
+        </field>
+
+    </record>
+
+    <record id="ca_view_inventory_form" model="ir.ui.view">
+        <field name="name">ca.stock.inventory</field>
+        <field name="model">stock.inventory</field>
+        <field name="inherit_id" ref="stock.view_inventory_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//button[@name='action_cancel_draft']" position="after">
+                <button name="action_cancel_adjustment" states="done" string="Cancel" type="object"/>
+            </xpath>
+        </field>
+
+    </record>
+</odoo>

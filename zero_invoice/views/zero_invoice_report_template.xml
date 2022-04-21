@@ -1,0 +1,636 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="report_invoice_zero_template">
+            <t t-call="web.internal_layout">
+                <t t-set="o" t-value="o.with_context(lang=lang)"/>
+                <!--                <div style="margin-top:0px">-->
+
+                <!--                </div>-->
+                <!--                <div></div>-->
+                <div class="page">
+                    <div>
+
+                    </div>
+
+                    <div class="row mb8">
+
+                        <div class="col-6">
+                            <span style="font-size: 28px; font-family: sans-serif; color: #686868;">
+                                <strong>FATURË TATIMORE SHITJE</strong>
+                            </span>
+                            <div style="margin-top: 30px;">
+                                <span style="font-size: 20px; font-family: sans-serif; color: #686868;">
+                                    SHITËSI
+                                </span>
+
+                            </div>
+                            <strong>
+                                <p t-field="o.company_id.name"
+                                   style="font-size: 28px; font-family: sans-serif; color: #686868;"/>
+                            </strong>
+                            <div t-field="o.company_id.partner_id"
+                                 style="font-size: 15px; font-family: sans-serif; color: #686868;"
+                                 t-options='{"widget": "contact", "fields": ["address"], "no_marker": true}'
+                            />
+                            <div style="font-size: 15px; font-family: sans-serif; color: #686868;">
+                                Tel:
+                                <span t-field="o.company_id.phone"/>
+                            </div>
+                            <div style="font-size: 15px; font-family: sans-serif; color: #686868;">
+                                Email:
+                                <span t-field="o.company_id.email"/>
+                            </div>
+                            <div style="font-size: 25px; font-family: sans-serif; color: #686868;">
+                                <strong>NIPT:</strong>
+                                <span t-field="o.company_id.vat"/>
+                            </div>
+
+                        </div>
+                        <div class="col-6 text-right mb4">
+                            <div name="company_address" class="float-right mb4"
+                                 style="border: 1px solid black; height: 200px; width: 200px;">
+                                <t t-if="o.company_id.logo">
+                                    <td>
+                                        <img t-attf-src="data:image/*;base64,{{o.company_id.logo}}"
+                                             style="width:100%;height:100%"/>
+                                    </td>
+                                </t>
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    </div>-->
+                    <div class="row mb8" style="margin-top: 20px;">
+                        <div class="col-6" style="margin-top:30px;">
+                            <div style="margin-top:50px;">
+                                <span style="font-size: 18px; font-family: sans-serif; color: #686868;">
+                                    BLERËSI
+                                </span>
+                                <div style="font-size: 20px; font-family: sans-serif; color: #686868;">
+                                    <strong>Emri:</strong>
+                                    <span t-field="o.partner_id.name"/>
+                                </div>
+                                <div style="font-family: sans-serif; color: #686868;">
+                                    <span style="font-size: 18px; font-family: sans-serif; color: #686868;">Adresa:
+                                    </span>
+                                    <t t-if="o.partner_id.street">
+                                        <span t-field="o.partner_id.street"/>,
+                                    </t>
+                                    <span t-field="o.partner_id.street2"/>
+                                    <br/>
+                                    <t t-if="o.partner_id.city">
+                                        <span t-field="o.partner_id.city" style="margin-left:70px;"/>,
+                                    </t>
+                                    <t t-if="o.partner_id.state_id">
+                                        <span
+                                                t-field="o.partner_id.state_id.code"/>,
+                                    </t>
+                                    <span t-field="o.partner_id.zip"/>
+                                    <br/>
+                                    <span t-field="o.partner_id.country_id.name" style="margin-left:70px;"/>
+                                </div>
+                                <div>
+                                    <span style="font-size: 18px; font-family: sans-serif; color: #686868;">Qyteti:
+                                    </span>
+                                    <span t-field="o.partner_id.city"
+                                          style="font-size: 15px; font-family: sans-serif; color: #686868;"/>
+                                </div>
+                                <div>
+                                    <span style="font-size: 18px; font-family: sans-serif; color: #686868;">
+                                        Telefoni:
+                                    </span>
+                                    <span t-field="o.partner_id.phone"
+                                          style="font-size: 15px; font-family: sans-serif; color: #686868;"/>
+                                </div>
+                                <div style="font-size: 20px; font-family: sans-serif; color: #686868;">
+                                    <strong>NIPT:</strong>
+                                    <span t-field="o.partner_id.vat"
+                                          style="font-size: 20px; font-family: sans-serif; color: #686868;"/>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-6" style="border-left: 1px solid black;">
+                            <span style="font-size: 18px; font-family: sans-serif; color: #686868;">
+                                TRANSPORTUESI
+                            </span>
+                            <div style="font-size: 20px; font-family: sans-serif; color: #686868;">
+                                <strong>Emri:</strong>
+                                <!--                                    <span t-field="o.partner_id.name"/>-->
+                            </div>
+                            <div style="font-family: sans-serif; color:  #686868;">
+                                <span style="font-size: 18px; font-family: sans-serif; color:  #686868;">Adresa:
+                                </span>
+                                <!--                                    <span t-field="o.partner_id.street"/>,-->
+                                <!--                                    <span t-field="o.partner_id.street2"/>-->
+                                <br/>
+                                <!--                                    <span t-field="o.partner_id.city" style="margin-left:70px;"/>,<span-->
+                                <!--                                        t-field="o.partner_id.state_id.code"/>,-->
+                                <!--                                    <span t-field="o.partner_id.zip"/>-->
+                                <br/>
+                                <!--                                    <span t-field="o.partner_id.country_id.name" style="margin-left:70px;"/>-->
+                            </div>
+
+                            <div>
+                                <span style="font-size: 18px; font-family: sans-serif; color: #686868;">Targa e
+                                    mjetit:
+                                </span>
+                                <span>
+
+                                </span>
+
+                                <!--                                    <span t-field="o.partner_id.name"-->
+                                <!--                                          style="font-size: 15px; font-family: sans-serif; color: #686868;"/>-->
+                            </div>
+                            <div>
+                                <span style="font-size: 18px; font-family: sans-serif; color: #686868;">Ora e
+                                    furnizimit:
+                                </span>
+                                <span>
+
+                                </span>
+                                <!--                                    <span t-field="o.partner_id.name"-->
+                                <!--                                          style="font-size: 15px; font-family: sans-serif; color: #686868;"/>-->
+                            </div>
+                            <div style="font-size: 20px; font-family: sans-serif; color: #686868;">
+                                <strong>NIPT:</strong>
+                                <!--                                    <strong>-->
+                                <!--                                        <span t-field="o.partner_id.vat"-->
+                                <!--                                              style="font-size: 15px; font-family: sans-serif; color: #686868;"/>-->
+                                <!--                                    </strong>-->
+                            </div>
+                        </div>
+                    </div>
+                    <!--                    </div>-->
+
+                    <table class="table table-sm o_main_table" name="invoice_line_table"
+                           style="margin-top:25px; border: 1px solid;">
+                        <thead style="border: 1px solid;">
+                            <tr>
+                                <th name="head_number" class="text-center"
+                                    style="border: 1px solid; font-size: 15px; font-family: sans-serif; color: #686868;">
+                                    <span>Nr.</span>
+                                </th>
+                                <th name="head_quantity" class="text-center"
+                                    style="border: 1px solid; width: 300px; font-size: 15px; font-family: sans-serif; color: #686868;">
+                                    <span>Përshkrimi i mallit ose Shërbimit</span>
+                                </th>
+                                <th name="head_priceunit" class="text-center"
+                                    style="border: 1px solid; font-size: 10px; font-family: sans-serif; color: #686868; width: 10%;">
+                                    <span>Njësia e Matjes</span>
+                                </th>
+                                <th name="head_amount" class="text-center"
+                                    style="border: 1px solid;font-size: 10px; font-family: sans-serif; color: #686868; width:11px">
+                                    <span>Sasia</span>
+                                </th>
+                                <th name="header_priceunit" class="text-center"
+                                    style="border: 1px solid; font-size: 10px; font-family: sans-serif; color: #686868; width: 11%;">
+                                    <span>Cmimi per njësi pa TVSH</span>
+                                </th>
+                                <th name="header_without_vat" class="text-center"
+                                    style="border: 1px solid; font-size: 10px; font-family: sans-serif; color: #686868; width: 14%;">
+                                    <span>Vlefta pa TVSH</span>
+                                </th>
+                                <th name="header_vat_value" class="text-center"
+                                    style="border: 1px solid; font-size: 10px; font-family: sans-serif; color: #686868;">
+                                    <span>Vlefta e TVSH</span>
+                                </th>
+                                <th name="header_vat_value" class="text-center"
+                                    style="border: 1px solid; font-size: 10px; font-family: sans-serif; color: #686868;">
+                                    <span>Vlefta me TVSH</span>
+                                </th>
+
+
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <t t-set="num_value" t-value="0"/>
+                            <t t-set="tot_with_vat" t-value="0"/>
+                            <t t-set="tot_without_vat" t-value="0"/>
+                            <t t-set="current_subtotal" t-value="0"/>
+                            <t t-set="lines"
+                               t-value="o.invoice_line_ids.sorted(key=lambda l: (-l.sequence, l.date, l.move_name, -l.id), reverse=True)"/>
+
+                            <t t-foreach="lines" t-as="line">
+                                <t t-set="num_value" t-value="num_value + 1"/>
+
+                                <t t-set="current_subtotal" t-value="current_subtotal + line.price_subtotal"
+                                   groups="account.group_show_line_subtotals_tax_excluded"/>
+                                <t t-set="current_subtotal" t-value="current_subtotal + line.price_total"
+                                   groups="account.group_show_line_subtotals_tax_included"/>
+
+                                <tr t-att-class="'bg-200 font-weight-bold o_line_section' if line.display_type == 'line_section' else 'font-italic o_line_note' if line.display_type == 'line_note' else ''"
+                                >
+                                    <t t-if="not line.display_type" name="account_invoice_line_accountable">
+                                        <td name="account_invoice_line_number"
+                                            style="border: 1px solid; font-size: 10px; font-family: sans-serif; color: #686868;">
+                                            <span t-esc="num_value"/>
+                                        </td>
+
+                                        <td name="account_invoice_line_name" class="text-center"
+                                            style="border: 1px solid; font-size: 12px; font-family: sans-serif; color: #686868;">
+                                            <span class="text-nowrap" t-field="line.name"
+                                                  t-options="{'widget': 'text'}"/>
+                                        </td>
+                                        <td class="text-center"
+                                            style="border: 1px solid; font-size: 12px; font-family: sans-serif; color: #686868;">
+                                            <span class="text-nowrap" t-field="line.product_uom_id"/>
+
+                                        </td>
+                                        <td class="text-center"
+                                            style="border: 1px solid; font-size: 12px; font-family: sans-serif; color: #686868;">
+                                            <span class="text-nowrap" t-field="line.quantity"/>
+
+                                        </td>
+                                        <td class="text-right"
+                                            style="border: 1px solid; font-size: 12px; font-family: sans-serif; color: #686868;">
+                                            <t t-set="tax_selection"
+                                               t-value="line.env['ir.config_parameter'].sudo().get_param('account.show_line_subtotals_tax_selection')"/>
+
+
+                                            <t t-if="o.currency_id.position == 'before'">
+                                                <span t-field="o.currency_id.symbol"/>
+
+                                                <t t-if="tax_selection == 'tax_excluded'">
+                                                    <span class="text-nowrap" t-field="line.price_unit"/>
+                                                </t>
+                                                <t t-else="">
+                                                    <span class="text-nowrap"
+                                                          t-esc="line.price_total/line.quantity"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-nowrap" t-field="line.price_unit"/>
+                                                <span t-field="o.currency_id.symbol"/>
+                                            </t>
+
+                                        </td>
+                                        <td class="text-right"
+                                            style="border: 1px solid; font-size: 12px; font-family: sans-serif; color: #686868;">
+                                            <span class="text-nowrap" t-field="line.price_subtotal"/>
+                                        </td>
+                                        <td class="text-right"
+                                            style="border: 1px solid; font-size: 12px; font-family: sans-serif; color: #686868;">
+                                            <t t-set="vat_value" t-value="line.price_total - line.price_subtotal"/>
+                                            <t t-if="o.currency_id.position == 'before'">
+                                                <span t-field="o.currency_id.symbol"/>
+                                                <span class="text-nowrap" t-esc="round(vat_value, 2)"/>
+                                                <t t-if="vat_value > 0">
+                                                    <t t-set="tot_with_vat"
+                                                       t-value="tot_with_vat + line.credit"/>
+
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-set="tot_without_vat"
+                                                       t-value="tot_without_vat + line.credit"/>
+                                                </t>
+                                            </t>
+                                            <t t-else="">
+                                                <span class="text-nowrap" t-esc="round(vat_value, 2)"/>
+                                                <t t-if="vat_value > 0">
+                                                    <t t-set="tot_with_vat"
+                                                       t-value="tot_with_vat + line.credit"/>
+
+                                                </t>
+                                                <t t-else="">
+                                                    <t t-set="tot_without_vat"
+                                                       t-value="tot_without_vat + line.credit"/>
+                                                </t>
+                                                <span t-field="o.currency_id.symbol"/>
+                                            </t>
+                                        </td>
+                                        <td class="text-right"
+                                            style="border: 1px solid; font-size: 12px; font-family: sans-serif; color: #686868;">
+                                            <span class="text-nowrap" t-field="line.price_total"/>
+                                        </td>
+                                    </t>
+                                </tr>
+
+                            </t>
+                            <t t-if="o.is_diff_currency == True">
+                                <tr>
+                                    <td style="border: 1px solid white;">
+                                    </td>
+                                    <td style="border: 1px solid white;">
+                                    </td>
+                                    <td style="border: 1px solid white; font-family: sans-serif; color: #686868;"
+                                        class="text-center">
+                                        <strong>
+                                            <span>TOTALI</span>
+                                        </strong>
+                                    </td>
+                                    <td style="border-bottom: 1px solid white;border-left: 1px solid white;font-family: sans-serif; color: #686868;"
+                                        class="text-right">
+                                        <strong>
+                                            <span t-field="o.currency_id.name" style="text-transform: uppercase;"/>
+                                        </strong>
+                                    </td>
+                                    <td style="border-bottom: 1px solid white;border-left: 1px solid white;font-family: sans-serif; color: #686868;">
+                                    </td>
+                                    <td style="border: 1px solid;font-family: sans-serif; color: #686868;"
+                                        class="text-right">
+                                        <span t-field="o.amount_untaxed"/>
+                                    </td>
+                                    <td style="border: 1px solid;font-family: sans-serif; color: #686868;"
+                                        class="text-right">
+                                        <span t-field="o.amount_tax"/>
+                                    </td>
+                                    <td style="border: 1px solid;font-family: sans-serif; color: #686868;"
+                                        class="text-right">
+                                        <span t-field="o.amount_total"/>
+                                    </td>
+                                </tr>
+                            </t>
+                            <tr>
+                                <td style="border: 1px solid white;">
+                                </td>
+                                <td style="border: 1px solid white;">
+                                    <t t-if="o.is_diff_currency == True">
+                                        <span style="font-family: sans-serif; color: #686868;">Kursi i kembimit 1
+                                        </span>
+                                        <span t-field="o.currency_id.name"
+                                              style="font-family: sans-serif; color: #686868;"/>
+                                        <span style="font-family: sans-serif; color: #686868;">=</span>
+                                        <span t-field="o.main_curr_rate"
+                                              style="font-family: sans-serif; color: #686868;"/>
+                                    </t>
+                                    <t t-else="">
+
+                                    </t>
+                                </td>
+                                <td style="border: 1px solid white; font-family: sans-serif; color: #686868;"
+                                    class="text-center">
+                                    <strong>
+                                        <span>TOTALI</span>
+                                    </strong>
+                                </td>
+                                <td style="border-left: 1px solid white;border-bottom: 1px solid white; font-family: sans-serif; color: #686868;"
+                                    class="text-center">
+                                    <strong>
+                                        <span t-field="o.company_currency_id.name"
+                                              style="text-transform: uppercase;"/>
+                                    </strong>
+                                </td>
+                                <td style="border-bottom: 1px solid white;border-left: 1px solid white;font-family: sans-serif; color: #686868;">
+                                </td>
+                                <td style="border: 1px solid;font-family: sans-serif; color: #686868;"
+                                    class="text-right">
+                                    <span t-field="o.amount_untaxed_signed"/>
+                                </td>
+                                <td style="border: 1px solid;font-family: sans-serif; color: #686868;"
+                                    class="text-right">
+                                    <span t-field="o.amount_tax_signed"/>
+                                </td>
+                                <td style="border: 1px solid;font-family: sans-serif; color: #686868;"
+                                    class="text-right">
+                                    <span t-field="o.amount_total_signed"/>
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid white;">
+                                </td>
+                                <td style="border: 1px solid white;font-size: 15px;" class="text-right">
+                                </td>
+                                <td style="border: 1px solid white;font-size: 12px;font-family: sans-serif; color: #686868;"
+                                    class="text-right">
+                                    <span>Furnizime te</span>
+                                </td>
+                                <td style="border: 1px solid white;font-size: 12px;font-family: sans-serif; color: #686868;width:12 px;"
+                                    class="text-left">
+                                    <span>tatueshme:</span>
+                                </td>
+                                <td style="border-top: 1px solid white;border-bottom: 1px solid white;border-left: 1px solid white;">
+                                </td>
+                                <td style="border: 1px solid;font-family: sans-serif; color: #686868;"
+                                    class="text-right">
+                                    <t t-if="o.company_id.currency_id.position == 'before'">
+                                        <strong>
+                                            <span t-field="o.company_id.currency_id.symbol"/>
+                                        </strong>
+                                        <strong>
+                                            <span t-esc="round(tot_with_vat,2)" class="text-nowrap"/>
+                                        </strong>
+                                    </t>
+                                    <t t-else="">
+                                        <strong class="text-right">
+                                            <span t-esc="round(tot_with_vat,2)"/>
+                                        </strong>
+                                        <strong>
+                                            <span t-field="o.company_id.currency_id.symbol" class="text-nowrap"/>
+                                        </strong>
+                                    </t>
+                                </td>
+                                <td style="border-top: 1px solid white;border-bottom: 1px solid white;border-right: 1px solid white;">
+                                </td>
+                                <td style="border: 1px solid white;">
+                                </td>
+                            </tr>
+                            <tr>
+                                <td style="border: 1px solid white;">
+                                </td>
+                                <td style="border: 1px solid white;font-size: 15px;" class="text-right">
+                                </td>
+                                <td style="border: 1px solid white;font-size: 12px; font-family: sans-serif; color: #686868;"
+                                    class="text-right">
+                                    <span>Furnizime te</span>
+                                </td>
+                                <td style="border: 1px solid white;font-size: 12px;font-family: sans-serif; color: #686868;width:12px;"
+                                    class="text-left">
+                                    <span>patatueshme:</span>
+                                </td>
+                                <td style="border-top: 1px solid white;border-bottom: 1px solid white;border-left: 1px solid white;">
+                                </td>
+                                <td style="border: 1px solid;font-family: sans-serif; color: #686868;"
+                                    class="text-right">
+                                    <t t-if="o.company_id.currency_id.position == 'before'">
+                                        <strong>
+                                            <span t-field="o.company_id.currency_id.symbol"/>
+                                        </strong>
+                                        <strong>
+                                            <span t-esc="round(tot_without_vat,2)"/>
+                                        </strong>
+                                    </t>
+                                    <t t-else="">
+                                        <strong>
+                                            <span t-esc="round(tot_without_vat,2)"/>
+                                        </strong>
+                                        <strong>
+                                            <span t-field="o.company_id.currency_id.symbol"/>
+                                        </strong>
+                                    </t>
+                                </td>
+                                <td style="border-top: 1px solid white;border-bottom: 1px solid white;border-right: 1px solid white;">
+                                </td>
+                                <td style="border: 1px solid white;">
+                                </td>
+                            </tr>
+
+
+                        </tbody>
+                    </table>
+                    <table class="table" name="signature_table"
+                           style="margin-top: 15px;font-family: sans-serif; color: 686868;">
+                        <tbody style="border-top: 1px solid white;">
+                            <tr style="border-top: 1px solid white;border-bottom: 1px solid white;">
+                                <td class="text-center"
+                                    style="border-top: 1px solid white; border-bottom: 1px solid white;font-family: sans-serif; color: 686868;">
+                                    <span style="font-family: sans-serif; color: #686868;">BLERËSI
+                                        <br/>
+                                    </span>
+                                    <span style="font-size: 14px; font-family: sans-serif; color: #686868;">(emër,
+                                        mbiemër, nënshkrimi)
+                                    </span>
+                                </td>
+                                <td class="text-center"
+                                    style="border-top: 1px solid white; border-bottom: 1px solid white;font-family: sans-serif; color: #686868;">
+                                    <span>TRANSPORTUESI
+                                        <br/>
+                                    </span>
+                                    <span style="font-size: 14px; font-family: sans-serif; color: #686868;">(emër,
+                                        mbiemër, nënshkrimi)
+                                    </span>
+                                </td>
+                                <td class="text-center"
+                                    style="border-top: 1px solid white; border-bottom: 1px solid white; font-family: sans-serif; color: #686868;">
+                                    <span>SHITËSI
+                                        <br/>
+                                    </span>
+                                    <span style="font-size: 14px; font-family: sans-serif; color: #686868;">(emër,
+                                        mbiemër, nënshkrimi)
+                                    </span>
+                                </td>
+                            </tr>
+                            <tr style="border-top: 1px solid white;">
+                                <td class="text-center"
+                                    style="border-top: 1px solid white;font-family: sans-serif; color: #686868;">
+                                    <div style="width: 100%; height: 30px; border-bottom: 1px solid #686868;">
+
+                                    </div>
+                                </td>
+                                <td class="text-center"
+                                    style="border-top: 1px solid white;font-family: sans-serif; color: #686868; ">
+                                    <div style="width: 100%; height: 30px; border-bottom: 1px solid #686868;">
+
+                                    </div>
+                                </td>
+                                <td class="text-center"
+                                    style="border-top: 1px solid white;font-family: sans-serif; color: #686868;">
+                                    <div style="width: 100%; height: 30px; border-bottom: 1px solid #686868;">
+
+                                    </div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                    <br/>
+                    <br/>
+
+                    <div class="row" style="margin-top: 15px;">
+                        <div class="col-6">
+                            <strong style="font-size: 28px; font-family: sans-serif; color:#505050;">Llogaritë
+                                Bankare
+                            </strong>
+
+                        </div>
+                    </div>
+
+                    <div class="row" style="margin-top: 0px;">
+                        <div class="col-6">
+                            <table class="table" name="bank_table"
+                                   style="font-family: sans-serif; color: #686868;">
+                                <tbody>
+                                    <t t-set="count" t-value="o.get_bank_accounts()"/>
+
+                                    <t t-set="count1" t-value="count[0]"/>
+                                    <t t-set="count2" t-value="count[1]"/>
+
+                                    <t t-foreach="count1" t-as="banks">
+
+
+                                        <tr style="border-top: 1px solid white;border-bottom: 1px solid white;">
+                                            <td class="text-left"
+                                                style="border-top: 1px solid white; border-bottom: 1px solid white;font-family: sans-serif; color: #686868;line-height:0 !important;margin-bottom: 0px !important;">
+                                                <span t-field="banks.bank_id.name"/>
+
+
+                                            </td>
+                                            <td class="text-left"
+                                                style="border-top: 1px solid white; border-bottom: 1px solid white;font-family: sans-serif; color: #686868;line-height:0 !important;margin-bottom: 0px !important;">
+                                                <span t-field="banks.currency_id.name"/>
+
+                                            </td>
+                                            <td class="text-left"
+                                                style="border-top: 1px solid white; border-bottom: 1px solid white;font-family: sans-serif; color: #686868;line-height:0 !important;margin-bottom: 0px !important;">
+                                                <span t-field="banks.acc_number"/>
+
+                                            </td>
+                                        </tr>
+                                    </t>
+
+                                </tbody>
+                            </table>
+
+
+                        </div>
+                        <div class="col-6">
+                            <table class="table" name="bank_table"
+                                   style="font-family: sans-serif; color: #686868;">
+                                <tbody>
+                                    <t t-foreach="count2" t-as="banks">
+
+                                        <tr style="border-top: 1px solid white;border-bottom: 1px solid white;">
+                                            <td class="text-left"
+                                                style="border-top: 1px solid white; border-bottom: 1px solid white;font-family: sans-serif; color: #686868;line-height:0 !important;margin-bottom: 0px !important;">
+                                                <span t-field="banks.bank_id.name"/>
+
+
+                                            </td>
+                                            <td class="text-left"
+                                                style="border-top: 1px solid white; border-bottom: 1px solid white;font-family: sans-serif; color: #686868;line-height:0 !important;margin-bottom: 0px !important;">
+                                                <span t-field="banks.currency_id.name"/>
+
+                                            </td>
+                                            <td class="text-left"
+                                                style="border-top: 1px solid white; border-bottom: 1px solid white;font-family: sans-serif; color: #686868;line-height:0 !important;margin-bottom: 0px !important;">
+                                                <span t-field="banks.acc_number"/>
+
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </tbody>
+                            </table>
+
+
+                        </div>
+
+
+                        <!--                                 <table class="table" name="bank_table"-->
+                        <!--                                        style="font-family: sans-serif; color: #686868;">-->
+                        <!--                                <tbody>-->
+
+
+                        <div class="row" style="margin-top: 25px;">
+                            <div class="col-12">
+                                <strong style="font-size: 15px; font-family: sans-serif; color:#505050;">
+                                    Përdorimi i kësaj fature është i miratuar nga Drejtoria e Përgjithshme e Tatimeve me
+                                    autorim Nr. , Datë
+                                </strong>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </t>
+        </template>
+        <template id="report_invoice_zero">
+            <t t-call="web.html_container">
+                <t t-foreach="docs" t-as="o">
+                    <t t-set="lang"
+                       t-value="o.invoice_user_id.sudo().lang if o.move_type in ('in_invoice', 'in_refund') else o.partner_id.lang"/>
+                    <t t-call="zero_invoice.report_invoice_zero_template" t-lang="lang"/>
+                </t>
+            </t>
+        </template>
+    </data>
+</odoo>
+
+

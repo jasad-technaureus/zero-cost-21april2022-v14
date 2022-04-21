@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="company_inherited_form" model="ir.ui.view">
+        <field name="name">res.company.inherited.form</field>
+        <field name="model">res.company</field>
+        <field name="inherit_id" ref="base.view_company_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//notebook/page[@name='general_info']" position="after">
+                <page string="Fiscalisation" name="fiscalisation">
+                    <group>
+                        <group>
+                            <field name="is_issuer_in_vat"/>
+                            <field name="software_code"/>
+                            <field name="maintenance_software_code"/>
+                            <field name="webservice_url_fiscalisation"/>
+                            <field name="einvoice_url"/>
+                            <field name="country_fiscalisation_code"/>
+                        </group>
+                        <group>
+                            <field name="qr_code_check_portal_url"/>
+                            <field name="certificate"/>
+                            <field name="certificate_password" password="True"/>
+                            <field name="id_type"/>
+                            <br/>
+
+                            <field name="embed_pdf_in_ubl_xml_invoice"/>
+                            <field name="proxy_var"/>
+                        </group>
+
+                    </group>
+
+                </page>
+            </xpath>
+        </field>
+    </record>
+</odoo>

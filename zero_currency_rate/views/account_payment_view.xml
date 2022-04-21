@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_account_payment_form_main_currency_rate_new" model="ir.ui.view">
+        <field name="name">view_account_payment_form_main_currency_rate.new</field>
+        <field name="model">account.payment</field>
+        <field name="inherit_id" ref="account.view_account_payment_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='partner_bank_id']" position="after">
+                <field name="is_diff_currency" invisible="1"/>
+                <field name="is_diff_currency_main" invisible="1"/>
+                <field name="main_curr_rate_new" invisible="1"/>
+                <field name="is_manual"
+                       attrs="{'invisible': [('is_diff_currency', '=', False)],'readonly': [('state', '=', 'posted')]}"/>
+                <label for="main_curr_rate" attrs="{'invisible': [('is_diff_currency_main', '=', False)]}"/>
+                <div class="o_row">
+                    <field name="main_curr_rate"
+                           attrs="{'readonly': ['|','|',('is_manual', '=', False),('state', '=', 'posted'),('is_diff_currency', '=', False)],'invisible': [('is_diff_currency_main', '=', False)]}"
+                           digits="[12,12]" force_save="1"/>
+                    <button name="update_price_rate" type="object" string="Update Currency Rate"
+                            class="btn-link mb-1 px-0" icon="fa-refresh"
+                            attrs="{'invisible': ['|', ('is_manual', '=', False),('state', 'in', ('posted', 'cancel'))]}"/>
+                </div>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

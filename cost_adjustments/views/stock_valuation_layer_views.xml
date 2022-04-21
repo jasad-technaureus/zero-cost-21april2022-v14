@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="ca_stock_valuation_layer_view" model="ir.ui.view">
+        <field name="name">ca.stock.valuation.layer.view</field>
+        <field name="model">stock.valuation.layer</field>
+        <field name="inherit_id" ref="stock_account.stock_valuation_layer_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//form/sheet" position="before">
+                <header>
+                    <field name="state" widget="statusbar"/>
+                </header>
+            </xpath>
+            <xpath expr="//field[@name='stock_move_id']" position="after">
+                <field name="operation_type"/>
+                <field name="blank_type"/>
+                <field name="transfer_id"/>
+                <field name="order_type"/>
+                <field name="purchase_order_id"
+                       attrs="{'invisible':['|',('order_type','=','sale'),('order_type','=',False)]}"/>
+                <field name="sale_order_id"
+                       attrs="{'invisible':['|',('order_type','=','purchase'),('order_type','=',False)]}"/>
+
+                <!--                <field name="pos_order_id"/>-->
+                <field name="move_type"/>
+                <field name="move_id"/>
+                <field name="partner_id"/>
+                <field name="invoiced_unit_price"
+                       attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+                <field name="invoiced_amount"
+                       attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+                <field name="qty_sold"
+                       attrs="{'invisible': [('move_type', '!=', 'out_invoice'),('operation_type','!=','outgoing')]}"/>
+                <field name="margin" attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+                <field name="margin_per"
+                       attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+                <field name="markup_per"
+                       attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+                <field name="warehouse_name"/>
+                <field name="location_name"/>
+                <field name="team_name"/>
+                <field name="invoice_user_name"/>
+            </xpath>
+            <xpath expr="//field[@name='create_date']" position="after">
+                <field name="real_date"/>
+            </xpath>
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="product_type"/>
+            </xpath>
+            <xpath expr="//field[@name='value']" position="attributes">
+                <attribute name="string">Total Cost</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="ca_stock_valuation_layer_tree" model="ir.ui.view">
+        <field name="name">ca.stock.valuation.layer.tree</field>
+        <field name="model">stock.valuation.layer</field>
+        <field name="inherit_id" ref="stock_account.stock_valuation_layer_tree"/>
+        <field name="arch" type="xml">
+            <!--            <tree default_order="real_date desc, id desc" create="0"-->
+            <!--                  import="0" js_class="inventory_report_list">-->
+            <xpath expr="//field[@name='company_id']" position="before">
+                <!--                <field name="operation_type"/>-->
+                <!--                &lt;!&ndash;                <field name="state" widget="badge" decoration-success="state == 'confirm'"&ndash;&gt;-->
+                <!--                &lt;!&ndash;                       decoration-muted="state =='cancel'" optional="hide"/>&ndash;&gt;-->
+                <!--                <field name="transfer_no"/>-->
+                <!--                <field name="blank_type"/>-->
+                <!--                <field name="warehouse_id"/>-->
+                <!--                <field name="create_date" optional="hide"/>-->
+                <!--                <field name="order_type" optional="hide"/>-->
+                <!--                <field name="order_no" optional="hide"/>-->
+                <!--                <field name="move_type" optional="hide"/>-->
+                <!--                <field name="move_no" optional="hide"/>-->
+                <!--                <field name="partner_id" optional="hide"/>-->
+                <!--                <field name="team_id" optional="hide"/>-->
+                <!--                <field name="invoice_user_id" optional="hide"/>-->
+                <!--                <field name="invoiced_unit_price" attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"-->
+                <!--                       optional="hide"/>-->
+                <!--                <field name="invoiced_amount" attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"-->
+                <!--                       optional="hide"/>-->
+                <!--                <field name="margin" attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}" optional="hide"/>-->
+
+                <!--                <field name="location_id" optional="hide"/>-->
+                <!--            </xpath>-->
+                <!--            <xpath expr="//field[@name='create_date']" position="attributes"> &lt;!&ndash;aaa&ndash;&gt;-->
+                <!--                <attribute name="invisible">1</attribute>-->
+                <!--            </xpath>-->
+                <!--            <xpath expr="//field[@name='company_id']" position="attributes"> &lt;!&ndash;aaa&ndash;&gt;-->
+                <!--                <attribute name="invisible">1</attribute>-->
+                <!--            </xpath>&lt;!&ndash;aaa&ndash;&gt;-->
+                <!--            <xpath expr="//field[@name='value']" position="before"> &lt;!&ndash;aaa&ndash;&gt;-->
+                <!--                <field name="unit_cost"/>-->
+            </xpath>
+            <xpath expr="//tree" position="replace">
+                <tree default_order="real_date desc, id desc" create="0"
+                      import="0" js_class="inventory_report_list">
+                    <!--                    <field name="create_date" string="Date" optional="hide"/>-->
+                    <!--                    <field name="real_date" string = 'Real Datess'/>-->
+                    <field name="product_id"/>
+                    <field name="quantity"/>
+                    <field name="unit_cost"/>
+                    <field name="uom_id" groups="uom.group_uom" invisible="1"/>
+                    <field name="currency_id" invisible="1"/>
+                    <field name="value" sum="Total Value"/>
+                    <field name="operation_type"/>
+                    <field name="company_id" groups="base.group_multi_company" invisible="1"/>
+                    <groupby name="product_id">
+                        <field name="cost_method" invisible="1"/>
+                        <field name="quantity_svl" invisible="1"/>
+                        <button name="action_revaluation" icon="fa-plus" title="Add Manual Valuation" type="object"
+                                attrs="{'invisible':['|', ('cost_method', '=', 'standard'), ('quantity_svl', '&lt;=', 0)]}"/>
+                    </groupby>
+                    <field name="transfer_id"/>
+                    <field name="blank_type"/>
+                    <field name="warehouse_name"/>
+                    <field name="create_date" optional="hide"/>
+                    <field name="order_type" optional="hide"/>
+                    <field name="purchase_order_id" attrs="{'invisible':[('order_type','=','sale')]}" optional="hide"/>
+                    <field name="sale_order_id" attrs="{'invisible':[('order_type','=','purchase')]}" optional="hide"/>
+                    <field name="move_type" optional="hide"/>
+                    <field name="move_id" optional="hide"/>
+                    <field name="partner_id" optional="hide"/>
+                    <field name="team_name" optional="hide"/>
+                    <field name="invoice_user_name" optional="hide"/>
+                </tree>
+            </xpath>
+        </field>
+
+    </record>
+
+
+    <record id="stock_account.stock_valuation_layer_action" model="ir.actions.act_window">
+        <field name="name">Stock Valuation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.valuation.layer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="stock_account.stock_valuation_layer_tree"/>
+        <field name="domain">[('product_id.type', '=','product'),('state','=','confirm')]
+        </field>
+        <field name="context">{'search_default_group_by_product_id': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face"/>
+            <p>
+                There is no valuation layers. Valuation layers are created when some product moves should impact the
+                valuation of the stock.
+            </p>
+        </field>
+    </record>
+</odoo>

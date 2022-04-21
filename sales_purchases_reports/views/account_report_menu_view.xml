@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <menuitem id="sale_report_menu_id" name="Sales Reports" parent="account.menu_finance_reports" sequence="10">
+        <menuitem id="sale_summary_report_menu_id" name="Sales Summary" action="sale_summary_report_action" sequence="1"/>
+        <menuitem id="sale_details_report_new_menu_id" name="Sales Details" action="sale_details_report_action"/>
+    </menuitem>
+
+    <menuitem id="purchase_report_menu_id" name="Purchase Reports" parent="account.menu_finance_reports" sequence="20">
+        <menuitem id="purchase_summary_report_menu_id" name="Purchase Summary"
+                  action="purchase_summary_report_action" sequence="1"/>
+        <menuitem id="purchase_details_report_menu_id" name="Purchase Details"
+                  sequence="2" action="purchase_details_report_action"/>
+    </menuitem>
+
+</odoo>

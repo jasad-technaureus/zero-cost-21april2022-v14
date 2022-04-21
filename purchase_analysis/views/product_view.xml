@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<odoo>
+    <record id="product_purchase_analysis_tree_view" model="ir.ui.view">
+        <field name="name">product.analysis.tree.view</field>
+        <field name="model">product.product</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Analysis" create="0" delete="0" editable="bottom">
+                <header>
+                    <button name="action_order_wizard" type="object" string="Order" class="btn-primary"/>
+                </header>
+                <field name="default_code" string="Product Code" readonly="1"/>
+                <field name="name" string="Product Name" readonly="1"/>
+                <!--                <field name="sales_count" string="Total Sold" readonly="1"/>-->
+                <!--                <field name="purchased_product_qty" string="Total Purchased" readonly="1"/>-->
+                <field name="sale_number_invoiced" string="Total Sold" readonly="1"/>
+                <field name="purchase_number_invoiced" string="Total Purchased" readonly="1"/>
+                <field name="last_sale_date" readonly="1"/>
+                <field name="last_sale_qty" readonly="1" string="Last Sale Qty"/>
+                <field name="last_purchase_date" readonly="1" string="Last Purch. Date"/>
+                <field name="last_purchase_qty" readonly="1" string="Last Purch. Qty"/>
+                <field name="available_qty" string="Current Qty" readonly="1"/>
+                <field name="end_qty" string="Ending Qty" readonly="1"/>
+                <field name="avg_consumption" string="Daily Avg Consumption" readonly="1"/>
+                <field name="end_stock_date" readonly="1"/>
+                <field name="to_order"/>
+            </tree>
+        </field>
+    </record>
+
+
+    <record id="purchase_analysis_filter" model="ir.ui.view">
+        <field name="name">purchase.analysis.search.view.filter</field>
+        <field name="model">product.product</field>
+        <field name="inherit_id" ref="product.product_search_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//search" position="inside">
+                <field name="to_order"/>
+                <filter string="To Order" name="to_order" domain="[('to_order', '>', 0)]"/>
+            </xpath>
+        </field>
+    </record>
+
+
+    <menuitem
+            id="menu_purchase_analysis"
+            name="Purchase Analysis"
+            action="purchase_analysis.purchase_analysis_act_window"
+            parent="purchase.menu_procurement_management"
+            sequence="10"/>
+
+</odoo>

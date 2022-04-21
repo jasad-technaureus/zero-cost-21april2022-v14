@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo>
+	<data>
+		<record id="view_users_form" model="ir.ui.view">
+			<field name="name">res.users.form.session</field>
+			<field name="model">res.users</field>
+			<field name="inherit_id" ref="base.view_users_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//page[@name='access_rights']" position="after">
+					<page string="Sessions" class="oe_read_only">
+						<field
+							name    ="session_ids"
+							readonly="1"
+							groups  ="odoo_user_login_security.group_own_sessions"
+						>
+							<tree decoration-it="is_current==True">
+								<field name="is_current" invisible="True"/>
+								<field name="date_login"/>
+								<field name="platform"/>
+								<field name="browser"/>
+								<field name="browser_version"/>
+								<field name="ip"/>
+								<field name="country_id"/>
+							</tree>
+						</field>
+					</page>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="view_users_form_simple_modif" model="ir.ui.view">
+			<field name="name">res.users.preferences.form</field>
+			<field name="model">res.users</field>
+			<field name="inherit_id" ref="base.view_users_form_simple_modif"/>
+			<field name="arch" type="xml">
+				<xpath expr="//field[@name='signature']" position="after">
+					<field name="session_ids" groups="odoo_user_login_security.group_own_sessions">
+						<tree decoration-it="is_current==True">
+							<field name="is_current" invisible="True"/>
+							<field name="date_login"/>
+							<field name="platform"/>
+							<field name="browser"/>
+							<field name="browser_version"/>
+							<field name="ip"/>
+							<field name="country_id"/>
+						</tree>
+					</field>
+				</xpath>
+				<xpath expr="//button[@name='preference_change_password']" position="after">
+					<button
+						name  ="terminate_sessions"
+						type  ="object"
+						string="Logout everywhere else"
+						class ="btn btn-secondary"
+						groups ="odoo_user_login_security.group_own_sessions"
+					/>
+				</xpath>
+			</field>
+		</record>
+	</data>
+</odoo>

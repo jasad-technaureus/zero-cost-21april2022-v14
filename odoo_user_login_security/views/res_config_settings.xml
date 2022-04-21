@@ -1,0 +1,330 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo>
+	<data>
+		<record id="form_res_config_settings" model="ir.ui.view">
+			<field name="name">res.config.settings.form</field>
+			<field name="model">res.config.settings</field>
+			<field name="inherit_id" ref="base.res_config_settings_view_form"/>
+			<field name="arch" type="xml">
+				<xpath expr="//div[hasclass('settings')]" position="inside">
+					<div
+						class      ="app_settings_block"
+						data-string="Sessions"
+						string     ="Sessions"
+						data-key   ="odoo_user_login_security"
+					>
+						<div id="session_timeout_configuration">
+							<h2>Session Timeout Configuration</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="inactive_session_time_out_delay"/>
+										</span>
+										<div class="text-muted">
+											Please enter at least 60 and at most 31536000 (one year).
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="inactive_session_time_out_delay"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="inactive_session_time_out_ignored_url"/>
+										</span>
+										<div class="text-muted">
+											Intended for developer
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="inactive_session_time_out_ignored_url"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="clear_inactive_session_configuration">
+							<h2>Inactive Session Configuration</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="clear_inactive_session_after"/>
+										</span>
+										<div class="text-muted">
+											Inactive sessions to be removed after specified days,
+											<br/> 90 if left empty
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="clear_inactive_session_after"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="end_inactive_session_after"/>
+										</span>
+										<div class="text-muted">
+											Sessions will be timed out in case of no activity after,
+											<br/> 7 if left empty
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="end_inactive_session_after"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="simultaneous_session_configuration">
+							<h2>Simultaneous Session Configuration</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="forbid_multiple_sessions"/>
+										</span>
+										<div class="text-muted">
+											Forbids user from logging in from multiple sessions to improve security.
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="forbid_multiple_sessions"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div
+									class="col-12 col-lg-6 o_setting_box"
+									attrs="{'invisible':[('forbid_multiple_sessions','=',False)]}"
+								>
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="override_past_session"/>
+										</span>
+										<div class="text-muted">
+											Enable it to end other sessions and login.
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="override_past_session"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="failed_login_configuration">
+							<h2>Failed Login Configuration</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="login_cooldown_after"/>
+										</span>
+										<div class="text-muted">
+											5 if left empty.
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="login_cooldown_after"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="login_cooldown_duration"/>
+										</span>
+										<div class="text-muted">
+											When limit reached, login would be denied for
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="login_cooldown_duration"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="reset_password_configuration">
+							<h2>Reset Password Configuration</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="password_reset_attempt_limit"/>
+										</span>
+										<div class="text-muted">
+											Number of password reset request allowed in last hour.
+											<br/>Disabled if left empty.
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="password_reset_attempt_limit"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="password_reset_attempt_expiration"/>
+										</span>
+										<div class="text-muted">
+											Please enter a number 1 or greater in this field.
+											<br/>Disabled if left empty.
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="password_reset_attempt_expiration"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="password_lifetime_configuration">
+							<h2>Password Lifetime Configuration</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="password_lifetime"/>
+										</span>
+										<div class="text-muted">
+											Disabled if left empty.
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="password_lifetime"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="forced_password_change"/>
+										</span>
+										<div class="text-muted">
+											For expired password on login, user to be redirected to reset password.
+										</div>
+										<div class="content-group">
+											<div class="mt16 ml4 row">
+												<field
+													name ="forced_password_change"
+													class="oe_inline"
+												/>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div id="login_email_configuration">
+							<h2>Login Email Configuration</h2>
+							<div class="row mt16 o_settings_container">
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_left_pane">
+										<field
+											name ="send_failed_login_email"
+											class="oe_inline"
+										/>
+									</div>
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="send_failed_login_email"/>
+										</span>
+										<div class="text-muted">
+											User will get email on password entered wrong.
+										</div>
+									</div>
+								</div>
+								<div class="col-12 col-lg-6 o_setting_box">
+									<div class="o_setting_left_pane">
+										<field
+											name ="send_suspicious_login_email"
+											class="oe_inline"
+										/>
+									</div>
+									<div class="o_setting_right_pane">
+										<span class="o_form_label">
+											<label for="send_suspicious_login_email"/>
+										</span>
+										<div class="text-muted">
+											User will get email on logging first time on browser.
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+				</xpath>
+			</field>
+		</record>
+
+		<record id="action_res_config_settings" model="ir.actions.act_window">
+			<field name="name">Settings</field>
+			<field name="res_model">res.config.settings</field>
+			<field name="view_mode">form</field>
+			<field name="target">inline</field>
+			<field name="context" eval="{'module': 'odoo_user_login_security'}"/>
+		</record>
+
+		<menuitem
+			id      ="res_config_settings_menu"
+			parent  ="session_root_menu"
+			action  ="action_res_config_settings"
+			sequence="3"
+			groups  ="base.group_system"
+		/>
+	</data>
+</odoo>

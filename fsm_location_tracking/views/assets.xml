@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+        <template id="assets_backend" name="project assets" inherit_id="web.assets_backend">
+            <xpath expr="." position="inside">
+                <script src="/fsm_location_tracking/static/src/js/location_tracker.js"/>
+            </xpath>
+        </template>
+</odoo>

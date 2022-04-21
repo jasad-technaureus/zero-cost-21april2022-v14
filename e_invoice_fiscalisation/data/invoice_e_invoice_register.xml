@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="e_invoice_register_template">
+            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+                <SOAP-ENV:Header/>
+                <SOAP-ENV:Body>
+                    <RegisterEinvoiceRequest xmlns="https://Einvoice.tatime.gov.al/EinvoiceService/schema"
+                                             xmlns:ns2="http://www.w3.org/2000/09/xmldsig#"
+                                             Id="Request" Version="1">
+                        {e_header}
+                        <EinvoiceEnvelope>
+
+                            <UblInvoice>
+                                {ubl}
+                            </UblInvoice>
+                        </EinvoiceEnvelope>
+
+                    </RegisterEinvoiceRequest>
+                </SOAP-ENV:Body>
+            </SOAP-ENV:Envelope>
+        </template>
+    </data>
+</odoo>

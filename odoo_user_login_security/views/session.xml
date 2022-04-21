@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo>
+	<data>
+		<record id="tree_session_session" model="ir.ui.view">
+			<field name="name">session.session.tree</field>
+			<field name="model">session.session</field>
+			<field name="arch" type="xml">
+				<tree
+					decoration-it     ="is_current==True"
+					decoration-info   ="state=='logged_in'"
+					decoration-success="state=='logged_out'"
+					decoration-muted  ="state=='timed_out'"
+					decoration-danger ="state=='terminated'"
+				>
+					<field name="user_id"/>
+					<field name="platform"/>
+					<field name="browser"/>
+					<field name="browser_version"/>
+					<field name="ip"/>
+					<field name="country_id"/>
+					<field name="date_login"/>
+					<field name="duration"/>
+					<field name="date_logout"/>
+					<field name="state"/>
+					<field name="active" invisible="True"/>
+					<field name="is_current" invisible="True"/>
+					<button
+						name   ="terminate"
+						type   ="object"
+						confirm="Are you sure?"
+						icon   ="fa-remove"
+						attrs  ="{'invisible':['|',('active','=',False),('is_current','=',True)]}"
+						groups ="odoo_user_login_security.group_admin"
+					/>
+					<field
+						name="last_activity_on"
+						groups="base.group_no_one"
+						attrs="{'invisible':[('active','=',False)]}"
+					/>
+				</tree>
+			</field>
+		</record>
+
+		<record id="form_session_session" model="ir.ui.view">
+			<field name="name">session.session.form</field>
+			<field name="model">session.session</field>
+			<field name="arch" type="xml">
+				<form archive="false">
+					<header>
+						<button
+							name   ="terminate"
+							string ="End Session"
+							type   ="object"
+							confirm="Are you sure?"
+							icon   ="fa-remove"
+							attrs  ="{'invisible':['|',('active','=',False),('is_current','=',True)]}"
+							groups ="odoo_user_login_security.group_admin"
+						/>
+						<field name="state" widget="statusbar" statusbar_visible="logged_in"/>
+					</header>
+					<sheet>
+						<field name="active" invisible="True"/>
+						<field name="is_current" invisible="True"/>
+						<group>
+							<group>
+								<field name="session_id" attrs="{'required':[('state','!=','error')]}"/>
+								<field name="user_id"/>
+								<field name="date_login"/>
+								<field name="date_logout"/>
+								<field name="duration"/>
+								<field
+									name="last_activity_on"
+									groups="base.group_no_one"
+									attrs="{'invisible':[('active','=',False)]}"
+								/>
+							</group>
+							<group>
+								<field name="ip"/>
+								<field name="country_id"/>
+								<field name="platform"/>
+								<field name="browser"/>
+								<field name="browser_version"/>
+								<field name="user_agent" groups="base.group_no_one"/>
+							</group>
+						</group>
+					</sheet>
+				</form>
+			</field>
+		</record>
+
+		<record id="search_session_session" model="ir.ui.view">
+			<field name="name">session.session.search</field>
+			<field name="model">session.session</field>
+			<field name="arch" type="xml">
+				<search>
+					<field name="user_id" filter_domain="[('user_id.name', 'ilike', self)]"/>
+					<group expand="0" string="Filter by Login State">
+						<filter
+							name  ="filter_active"
+							string="Active"
+							domain="[('active','=',True)]"
+							help  ="Active"
+						/>
+						<filter
+							name  ="filter_inactive"
+							string="Inactive"
+							domain="[('active','=',False)]"
+							help  ="Inactive"
+						/>
+					</group>
+					<group expand="0" string="Group By">
+						<filter
+							name   ="group_by_user"
+							string ="User"
+							domain ="[]"
+							context="{'group_by':'user_id'}"
+						/>
+						<filter
+							name   ="group_by_state"
+							string ="State"
+							domain ="[]"
+							context="{'group_by':'state'}"
+						/>
+						<filter
+							name   ="group_by_login_date"
+							string ="Login Date"
+							domain ="[]"
+							context="{'group_by':'date_login'}"
+						/>
+						<filter
+							name   ="group_by_logout_date"
+							string ="Logout Date"
+							domain ="[]"
+							context="{'group_by':'date_logout'}"
+						/>
+					</group>
+				</search>
+			</field>
+		</record>
+
+		<record id="graph_session_session" model="ir.ui.view">
+			<field name="name">session.session.graph</field>
+			<field name="model">session.session</field>
+			<field name="arch" type="xml">
+				<graph string="Sessions">
+					<field name="user_id" type="row"/>
+				</graph>
+			</field>
+		</record>
+
+		<record id="action_session_session" model="ir.actions.act_window">
+			<field name="name">Sessions</field>
+			<field name="res_model">session.session</field>
+			<field name="view_mode">tree,form,graph</field>
+			<field name="context" eval="{'search_default_filter_active':True,'search_default_filter_inactive':True}"/>
+			<field name="help" type="html">
+				<p class="o_view_nocontent_smiling_face">
+					Re-login to view current session record.
+				</p>
+			</field>
+		</record>
+
+		<menuitem
+			id      ="menu_session_session"
+			action  ="action_session_session"
+			parent  ="session_root_menu"
+			sequence="2"
+		/>
+	</data>
+</odoo>

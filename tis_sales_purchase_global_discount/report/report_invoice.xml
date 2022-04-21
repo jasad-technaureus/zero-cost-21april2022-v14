@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <data>
+        <template id="report_invoice_document_global_discount" inherit_id="account.report_invoice_document">
+            <xpath expr="//div[hasclass('clearfix')]/div/div/table/tr[2]/td[1]" position="replace">
+                <td>
+                    <strong>Net Total</strong>
+                </td>
+            </xpath>
+            <xpath expr="//div[hasclass('clearfix')]/div/div/table/t" position="after">
+                <tr class="border-black">
+                    <td>
+                        <strong>Total</strong>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="o.amount_grand"
+                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <strong>Discount</strong>
+                    </td>
+                    <td class="text-right">
+                        <span t-field="o.amount_discount"
+                              t-options='{"widget": "monetary", "display_currency": o.currency_id}'/>
+                    </td>
+                </tr>
+            </xpath>
+        </template>
+    </data>
+
+</odoo>

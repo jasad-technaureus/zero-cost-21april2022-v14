@@ -1,0 +1,86 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+    <record id="auto_delivery_picking_view" model="ir.ui.view">
+        <field name="name">auto.delivery.picking.view</field>
+        <field name="model">stock.picking</field>
+        <field name="priority" eval="50"/>
+        <field name="inherit_id" ref="stock.view_picking_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date_done']" position="after">
+                <field name="real_date" invisible="1"/>
+                <field name="real_date_display"/>
+<!--                <field name="effective_date_display"/>-->
+                <field name="account_move_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="auto_delivery_stock_move_view" model="ir.ui.view">
+        <field name="name">auto.delivery.stock.view</field>
+        <field name="model">stock.move</field>
+        <field name="priority" eval="50"/>
+        <field name="inherit_id" ref="stock.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="real_date"/>
+                <field name="account_move_line_id" invisible="1"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="auto_delivery_stock_move_line_view" model="ir.ui.view">
+        <field name="name">auto.delivery.stock.line.view</field>
+        <field name="model">stock.move.line</field>
+        <field name="priority" eval="50"/>
+        <field name="inherit_id" ref="stock.view_move_line_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='date']" position="after">
+                <field name="real_date"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="auto_delivery_stock_valuation_layer_view" model="ir.ui.view">
+        <field name="name">auto.delivery.stock.valuation.layer.view</field>
+        <field name="model">stock.valuation.layer</field>
+        <field name="priority" eval="50"/>
+        <field name="inherit_id" ref="stock_account.stock_valuation_layer_tree"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="before">
+                <field name="real_date"/>
+            </xpath>
+        </field>
+    </record>
+    <record id="auto_delivery_product_view" model="ir.ui.view">
+        <field name="name">auto.delivery.product.view</field>
+        <field name="model">product.template</field>
+        <field name="priority" eval="50"/>
+        <field name="inherit_id" ref="product.product_template_only_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_debug" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+                <attribute name="attrs">{'readonly': [('is_debug', '=',
+                    False)]}
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="auto_delivery_product_product_view" model="ir.ui.view">
+        <field name="name">auto.delivery.product.product.view</field>
+        <field name="model">product.product</field>
+        <field name="priority" eval="50"/>
+        <field name="inherit_id" ref="product.product_normal_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='type']" position="after">
+                <field name="is_debug" invisible="1"/>
+            </xpath>
+            <xpath expr="//field[@name='standard_price']" position="attributes">
+                <attribute name="attrs">{'readonly': [('is_debug', '=',
+                    False)]}
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+
+
+</odoo>
+

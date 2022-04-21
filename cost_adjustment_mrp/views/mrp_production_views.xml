@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="ca_mrp_production_view" model="ir.ui.view">
+        <field name="name">ca.mrp.production.view</field>
+        <field name="model">mrp.production</field>
+        <field name="inherit_id" ref="mrp.mrp_production_form_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='user_id']" position="before">
+                <field name="real_date" invisible="1"/>
+                <field name="real_date_display"/>
+            </xpath>
+            <xpath expr="//button[@name='action_cancel']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|', '|', ('id', '=', False), ('state', 'in', ('cancel')),
+                    ('confirm_cancel', '=', False)]}
+                </attribute>
+
+            </xpath>
+            <!--            <xpath expr="//field[@name='user_id']" position="before">-->
+            <!--                <field name="real_date"/>-->
+            <!--            </xpath>-->
+            <xpath expr="//sheet/div[1]/button[7]" position="replace">
+                <button name="%(mrp.action_mrp_production_moves)d" type="action" string="Product Moves"
+                        class="oe_stat_button" icon="fa-exchange"
+                        attrs="{'invisible': [('state', 'not in', ('progress', 'done','cancel'))]}"/>
+            </xpath>
+
+        </field>
+    </record>
+
+    <record id="stock_account.stock_valuation_layer_action" model="ir.actions.act_window">
+        <field name="name">Stock Valuation</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">stock.valuation.layer</field>
+        <field name="view_mode">tree,form</field>
+        <field name="view_id" ref="stock_account.stock_valuation_layer_tree"/>
+        <field name="domain">['|',('product_id.is_kit_product', '=', True),('product_id.type',
+            '=','product'),('state','=','confirm')]
+        </field>
+        <field name="context">{'search_default_group_by_product_id': 1}</field>
+        <field name="help" type="html">
+            <p class="o_view_nocontent_smiling_face"/>
+            <p>
+                There is no valuation layers. Valuation layers are created when some product moves should impact the
+                valuation of the stock.
+            </p>
+        </field>
+    </record>
+
+
+</odoo>

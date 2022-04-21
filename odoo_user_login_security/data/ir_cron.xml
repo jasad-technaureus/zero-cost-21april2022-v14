@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo>
+	<data>
+		<record id="cron_remove_inactive_sessions" forcecreate="True" model="ir.cron">
+			<field name="name">Session: Remove Inactive Sessions</field>
+			<field name="active" eval="True"/>
+			<field name="model_id" ref="model_session_session"/>
+			<field name="interval_number">1</field>
+			<field name="interval_type">days</field>
+			<field name="numbercall">-1</field>
+			<field name="state">code</field>
+			<field name="code">model.handle_inactive_sessions()</field>
+		</record>
+	</data>
+</odoo>

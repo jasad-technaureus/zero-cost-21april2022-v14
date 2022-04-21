@@ -1,0 +1,180 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record model="ir.ui.view" id="view_sale_order_credit">
+        <field name="name">sale.order.credit.limit</field>
+        <field name="model">sale.order</field>
+        <field name="inherit_id" ref="sale.view_order_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="after">
+                <field name="partner_cred_warning" invisible="1"/>
+                <field name="partner_cred_blocking" invisible="1"/>
+                <div
+                        class="alert alert-info" role="alert" style="margin-bottom:0px;"
+                        attrs="{'invisible': ['|','|',('partner_cred_warning', '=', False),('state', '=', 'sale'),('state', '=', 'cancel')]}">
+                    <span>
+                        <field name="company_currency_id" invisible="1"/>
+                        The customer total receivable is
+                        <field name="partner_total_credit" options="{'currency_field': 'company_currency_id'}"/>.
+                        This customer has exceeded his warning limit
+                        <field name="warning_limit" options="{'currency_field': 'company_currency_id'}"/>.
+                        The customer total receivable would become
+                        <field name="total_credit_amount" options="{'currency_field': 'company_currency_id'}"/>
+                        !
+
+                    </span>
+                </div>
+
+                <div
+                        class="alert alert-info" role="alert" style="margin-bottom:0px;"
+                        attrs="{'invisible': ['|','|',('partner_cred_blocking', '=', False),('state', '=', 'sale'),('state', '=', 'cancel')]}">
+                    <span>
+                        <field name="company_currency_id" invisible="1"/>
+                        The customer total receivable is
+                        <field name="partner_total_credit" options="{'currency_field': 'company_currency_id'}"/>.
+                        This customer has exceeded his blocking limit
+                        <field name="blocking_limit" options="{'currency_field': 'company_currency_id'}"/>.
+                        The customer total receivable would become
+                        <field name="total_credit_amount" options="{'currency_field': 'company_currency_id'}"/>
+                        !
+
+                    </span>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record model="ir.ui.view" id="view_account_move_credit">
+        <field name="name">account.move.credit.limit</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//header" position="after">
+                <field name="partner_cred_warning" invisible="1"/>
+                <field name="partner_cred_blocking" invisible="1"/>
+                <div
+                        class="alert alert-info" role="alert" style="margin-bottom:0px;"
+                        attrs="{'invisible': ['|','|','|',('partner_cred_warning', '=', False), ('state', '=', 'posted'),('move_type', '=', 'out_refund'),('state', '=', 'cancel')]}">
+                    <span>
+                        <field name="company_currency_id" invisible="1"/>
+                        The customer total receivable is
+                        <field name="partner_total_credit" options="{'currency_field': 'company_currency_id'}"/>.
+                        This customer has exceeded his warning limit
+                        <field name="warning_limit" options="{'currency_field': 'company_currency_id'}"/>.
+                        The customer total receivable would become
+                        <field name="total_credit_amount" options="{'currency_field': 'company_currency_id'}"/>
+                        !
+
+                    </span>
+                </div>
+
+                <div
+                        class="alert alert-info" role="alert" style="margin-bottom:0px;"
+                        attrs="{'invisible': ['|','|','|',('partner_cred_blocking', '=', False), ('state', '=', 'posted'),('move_type', '=', 'out_refund'),('state', '=', 'cancel')]}">
+                    <span>
+                        <field name="company_currency_id" invisible="1"/>
+                        The customer total receivable is
+                        <field name="partner_total_credit" options="{'currency_field': 'company_currency_id'}"/>.
+                        This customer has exceeded his blocking limit
+                        <field name="blocking_limit" options="{'currency_field': 'company_currency_id'}"/>.
+                        The customer total receivable would become
+                        <field name="total_credit_amount" options="{'currency_field': 'company_currency_id'}"/>
+                        !
+
+                    </span>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+
+
+    <record id="credit_limit_blocking_view_wizard" model="ir.ui.view">
+        <field name="name">credit.limit.blocking.form</field>
+        <field name="model">credit.blocking.wizard</field>
+        <field name="arch" type="xml">
+            <form string="blocking">
+                <field name="currency_id" invisible="1"/>
+                <group invisible="context.get('inv_id')" class="oe_title">
+                    <span invisible="context.get('inv_id')">The customer total receivable is
+                        <field name="partner_total_credit" readonly="1" widget="monetary"/>.
+                        This customer has exceeded his blocking limit
+                        <field name="blocking_limit" readonly="1" widget="monetary"/>.
+                        The customer total receivable would become
+                        <field name="total_credit_amount" readonly="1" widget="monetary"/>
+                        !
+
+                    </span>
+                </group>
+                <group invisible="not context.get('inv_id')" class="oe_title">
+                    <span invisible="not context.get('inv_id')">The customer total receivable is
+                        <field name="partner_total_credit" readonly="1" widget="monetary"/>.
+                        This customer has exceeded his blocking limit
+                        <field name="blocking_limit" readonly="1" widget="monetary"/>.
+                        The customer total receivable would become
+                        <field name="total_credit_amount" readonly="1" widget="monetary"/>
+                        ! You cannot confirm the customer invoice. Edit the blocking limit of the customer!
+
+                    </span>
+                </group>
+                <footer>
+                    <button string="OK" class="oe_highlight" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="credit_limit_warning_view_wizard" model="ir.ui.view">
+        <field name="name">credit.limit.warning.form</field>
+        <field name="model">credit.warning.wizard</field>
+        <field name="arch" type="xml">
+            <form string="warning">
+                <field name="currency_id" invisible="1"/>
+                <group class="oe_title">
+                    <span>The customer total receivable is
+                        <field name="partner_total_credit" readonly="1" widget="monetary"/>.
+                        This customer has exceeded his warning limit
+                        <field name="warning_limit" readonly="1" widget="monetary"/>.
+                        The customer total receivable would become
+                        <field name="total_credit_amount" readonly="1" widget="monetary"/>
+                        !
+
+                    </span>
+                </group>
+                <footer>
+
+                    <!--                    <t t-if="data">-->
+                    <button string="OK" class="oe_highlight" type="object" name="inv_ok"
+                            invisible="not context.get('inv_id')"/>
+                    <!--                    </t>-->
+                    <t t-else="">
+                        <button string="OK" class="oe_highlight" special="cancel"
+                                invisible="context.get('inv_id')"/>
+                    </t>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="credit_limit_warning_action" model="ir.actions.act_window">
+        <field name="name">Warning</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">credit.warning.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="credit_limit_warning_view_wizard"/>
+        <field name="target">new</field>
+    </record>
+    <record id="credit_limit_blocking_action" model="ir.actions.act_window">
+        <field name="name">Blocking</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">credit.blocking.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="credit_limit_blocking_view_wizard"/>
+        <field name="target">new</field>
+    </record>
+</odoo>

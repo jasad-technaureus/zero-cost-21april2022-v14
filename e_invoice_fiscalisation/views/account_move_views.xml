@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_move_view_form_button" model="ir.ui.view">
+        <field name="name">account_move_view_form_button</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//header/button[@name='button_draft']" position="replace">
+                <button name="button_draft" string="Reset to Draft" type="object" groups="account.group_account_invoice"
+                                attrs="{'invisible' : ['|', ('show_reset_to_draft_button', '=', False), ('fiscalised', '=', True)]}"/>
+            </xpath>
+
+            <xpath expr="//field[@name='move_type']" position="before">
+               <h3 style="color:green; text-align:center; margin-top:-10px;"><i><field name="fiscalised_msg" readonly="1" attrs="{'invisible': [('fiscalised','=', False)]}"/></i></h3>
+               <h3 style="color:red; text-align:center; margin-top:-10px;"><i><field name="fiscal_error_msg" readonly="1" attrs="{'invisible': ['|',('fiscalised','=', True), ('is_subsequent_delivery','=', False)]}"/></i></h3>
+               <h3 style="color:red; text-align:center; margin-top:-10px;"><i><field name="e_fiscal_error_msg" readonly="1" attrs="{'invisible': [('e_fiscalised','=', True)]}"/></i></h3>
+            </xpath>
+            <xpath expr="//header/button[@name='button_draft']" position="after">
+                <button name="button_fiscalise" string="Fiscalise" class="oe_highlight btn btn-danger"
+                        style="border-radius:8px;"
+                        attrs="{'invisible': [('state', '!=', 'posted')]}"
+                        type="object"/>
+<!--                <button name="generate_invoice_ubl_xml_etree_sign" string="Generate UBL XML" type="object"/>-->
+<!--                <button name="generate_e_invoice_request" string="Generate E Invoice Request" type="object"/>-->
+            </xpath>
+
+            <xpath expr="//field[@name='edi_state']" position="after">
+                <field name="print_qr_code"/>
+            </xpath>
+            <xpath expr="//notebook/page[@name='other_info']" position="after">
+                <page id="fiscalisation_info" string="Fiscalisation Info" name="fiscalisation_info">
+                    <group id="fiscalisation_tab_group">
+                        <group>
+                            <field name="to_modify" invisible="1"/>
+                            <field name="invoice_date_time" readonly="1"/>
+                            <field name="type_of_inv" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="is_e_invoice" attrs="{'invisible': [('type_of_inv', '!=', 'noncash')]}"/>
+                            <field name="xml_request_sent" readonly="1"/>
+                            <field name="fiscalised" readonly="1"/>
+                            <field name="e_fiscalised" readonly="1"/>
+                            <field name="is_subsequent_delivery" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="subseq_deliv_type" attrs="{'invisible': [('is_subsequent_delivery','=', False)], 'readonly': [('state','=', 'posted')]}"/>
+                            <field name="is_self_issued_invoice" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="type_of_self_iss" attrs="{'readonly': [('state','=', 'posted')], 'required':[('is_self_issued_invoice', '=', True)], 'invisible': [('is_self_issued_invoice','=', False)]}"/>
+                            <field name="is_simplified_inv" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="issue_date_time" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="inv_num" readonly="1"/>
+                            <field name="iic"  readonly="1"/>
+                            <field name="payment_type_id" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="payment_types" invisible="1"/>
+                            <field name="comp_card" attrs="{'required': [('payment_types','=', 'company')], 'readonly': [('state','=', 'posted')]}"/>
+<!--                            <field name="proces_type" attrs="{'invisible': ['|',('type_of_inv', '!=', 'NONCASH'),('fature_shoqeruese','=',True)], 'required': [('lloj_pagese', '=', 'NONCASH')], 'readonly': [('nivf', '!=', False)]}"/>-->
+                            <field name="proces_type"/>
+<!--                            <field name="document_type" attrs="{'invisible': ['|',('type_of_inv', '!=', 'NONCASH'),('fature_shoqeruese','=',True)], 'required': [('lloj_pagese', '=', 'NONCASH')], 'readonly': [('nivf', '!=', False)]}"/>-->
+                            <field name="document_type"/>
+                            <field name="period_start_date" attrs="{'invisible': [('proces_type', '!=', 'P2')], 'required': [('proces_type', '=', 'P2')], 'readonly': [('fic', '!=', False)]}"/>
+                            <field name="period_end_date" attrs="{'invisible': [('proces_type', '!=', 'P2')], 'required': [('proces_type', '=', 'P2')], 'readonly': [('fic', '!=', False)]}"/>
+
+                        </group>
+                        <group>
+                            <field name="is_reverse_charge" attrs="{'readonly': [('state','=', 'posted')], 'readonly': [('state','=', 'posted')]}"/>
+
+                            <field name="corrective_invoice_id" attrs="{'invisible': [('to_modify','=', False)]}"/>
+<!--                            'readonly': [('state','=', 'posted')]-->
+<!--                            <field name="correction"/>-->
+                            <field name="iic_ref" readonly="1" force_save="1"/>
+                            <field name="corrective_issue_date_time" readonly="1" force_save="1"/>
+                            <field name="corrective_type" force_save="1"/>
+                            <field name="is_bad_debt" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="bad_debt_invoice_id"  options="{'no_create': True, 'no_create_edit':True}" attrs="{'invisible': [('is_bad_debt','=', False)], 'required':[('is_bad_debt', '=', True)], 'readonly': [('state','=', 'posted')]}"/>
+                            <field name="bad_debt_iic_ref" attrs="{'invisible': [('is_bad_debt','=', False)]}" readonly="1" force_save="1"/>
+                            <field name="bad_debt_issue_date_time" attrs="{'invisible': [('is_bad_debt','=', False)]}" readonly="1" force_save="1"/>
+                            <field name="supply_start_date" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="supply_end_date" attrs="{'readonly': [('state','=', 'posted')]}"/>
+                            <field name="xml_request_file" readonly="1"/>
+                            <field name="xml_response_file" readonly="1"/>
+                            <field name="signed_ubl_xml_file" readonly="1"/>
+                            <field name="eic_xml_request_file" readonly="1"/>
+                            <field name="eic_xml_response_file" readonly="1"/>
+                            <field name="fic" readonly="1"/>
+                            <field name="eic" readonly="1"/>
+
+
+                        </group>
+                        <group label="IIC Signature">
+                            <group>
+                                <field name="iic_signature" readonly="1"/>
+<!--                                <field name="xml_request_file" readonly="1"/>-->
+<!--                                <field name="xml_response_file" readonly="1"/>-->
+<!--                                <field name="signed_ubl_xml_file" readonly="1"/>-->
+<!--                                <field name="eic_xml_request_file" readonly="1"/>-->
+<!--                                <field name="eic_xml_response_file" readonly="1"/>-->
+                                <field name="qr_code" widget="image" width="200" readonly="1"/>
+                            </group>
+                        </group>
+                    </group>
+                </page>
+            </xpath>
+
+            <xpath expr="//notebook/page[@id='invoice_tab']/field[@name='invoice_line_ids']/tree/field[@name='price_subtotal']"
+                   position="before">
+                <field name="vat_amount"/>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

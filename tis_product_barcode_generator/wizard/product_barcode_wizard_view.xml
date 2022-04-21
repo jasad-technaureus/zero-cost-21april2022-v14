@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="view_product_barcode_wizard_form" model="ir.ui.view">
+            <field name="name">product.barcode.all.form</field>
+            <field name="model">product.barcode.all</field>
+            <field name="arch" type="xml">
+                <form string="Generate EAN13">
+                    <group>
+                        <div>
+                            <label for="overwrite" string="Overwrite Existing EAN13"/>
+                            <field name="overwrite" nolabel="1"/>
+                        </div>
+                    </group>
+                    <footer>
+                        <button string="Generate" name="generate_barcode_all" type="object" class="oe_highlight"/>
+                        or
+                        <button string="Cancel" class="oe_link" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <record id="action_view_product_barcode_wizard" model="ir.actions.act_window">
+            <field name="name">Generate EAN13</field>
+            <field name="res_model">product.barcode.all</field>
+            <field name="type">ir.actions.act_window</field>
+            <field name="view_mode">form</field>
+            <field name="view_id" ref="view_product_barcode_wizard_form"/>
+            <field name="target">new</field>
+        </record>
+
+        <!--       <act_window-->
+        <!--        id="act_view_product_barcode_wizard"-->
+        <!--        name="Generate EAN13"-->
+        <!--        target="new"-->
+        <!--        multi="True"-->
+        <!--        res_model="product.barcode.all"-->
+        <!--        src_model="product.product"-->
+        <!--        view_mode="form"/>-->
+
+        <record id="act_view_product_barcode_wizard_act_window" model="ir.actions.server">
+            <field name="name">Generate EAN13</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="model_id" ref="tis_product_barcode_generator.model_product_barcode_all"/>
+            <field name="binding_model_id" ref="product.model_product_product"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.action_view_product_barcode_generate()
+            </field>
+        </record>
+        <record id="act_view_product_barcode_wizard_act_window_product_template" model="ir.actions.server">
+            <field name="name">Generate EAN13</field>
+            <field name="groups_id" eval="[(4, ref('base.group_system'))]"/>
+            <field name="model_id" ref="tis_product_barcode_generator.model_product_barcode_all"/>
+            <field name="binding_model_id" ref="product.model_product_template"/>
+            <field name="state">code</field>
+            <field name="code">
+                action = model.action_view_product_barcode_generate()
+            </field>
+        </record>
+
+    </data>
+</odoo>

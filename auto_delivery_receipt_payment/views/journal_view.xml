@@ -1,0 +1,48 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="auto_receipt_journal_view" model="ir.ui.view">
+        <field name="name">auto.receipt.journal.view</field>
+        <field name="model">account.journal</field>
+        <field name="inherit_id" ref="account.view_account_journal_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//page[@name='bank_account']" position="after">
+                <page name="automation_purchase" string="Automation"
+                      attrs="{'invisible': [('type','!=','purchase')]}">
+                    <group>
+                        <group string="Auto Receipt">
+                            <field name="auto_inventory" string="Auto Receipt"/>
+                            <field name="operation_type_id" attrs="{'invisible': [('auto_inventory','=',False)]}"
+                                   domain="[('code', '=', 'incoming')]"/>
+                        </group>
+                        <group string="Auto Payment">
+                            <field name="auto_payment"/>
+                            <field name="payment_journal_id"
+                                   attrs="{'invisible': [('auto_payment','=',False)]}"
+                                   domain="[('type', 'in', ['bank','cash'])]"/>
+                        </group>
+                    </group>
+
+                </page>
+                <page name="automation_sale" string="Automation"
+                      attrs="{'invisible': [('type','!=','sale')]}">
+                    <group>
+                        <group string="Auto Delivery">
+                            <field name="auto_inventory" string="Auto Delivery"/>
+                            <field name="warehouse_id" attrs="{'invisible': [('auto_inventory','=',False)]}"
+                            />
+                        </group>
+                        <group string="Auto Payment">
+                            <field name="auto_payment"/>
+                            <field name="payment_journal_id"
+                                   attrs="{'invisible': [('auto_payment','=',False)]}"
+                                   domain="[('type', 'in', ['bank','cash'])]"/>
+                        </group>
+                    </group>
+
+                </page>
+            </xpath>
+        </field>
+    </record>
+
+</odoo>

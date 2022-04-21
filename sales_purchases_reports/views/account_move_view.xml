@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+    <record id="sale_summary_report_tree_view" model="ir.ui.view">
+        <field name="name">sale.summary.report.tree.view</field>
+        <field name="model">account.move</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Summary" create="0" delete="0" edit="0">
+                <field name="invoice_date" string="Invoice Date" readonly="1"/>
+                <field name="name" string="Name" readonly="1"/>
+                <field name="journal_id" string="Journal" readonly="1"/>
+                <field name="partner_id" string="Customer" readonly="1"/>
+                <field name="company_id" readonly="1"/>
+                <field name="currency_id" readonly="1" optional="hide"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="real_amount_untaxed_signed"  widget='monetary' options="{'currency_field': 'company_currency_id'}" readonly="1"/>
+                <field name="real_amount_tax_signed" widget='monetary'  options="{'currency_field': 'company_currency_id'}" readonly="1"/>
+                <field name="real_amount_total_signed" widget='monetary'
+                       options="{'currency_field': 'company_currency_id'}"
+                       readonly="1"/>
+                <field name="real_amount_residual_signed" string="Amount Due" readonly="1" optional="hide"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-success="state == 'posted'"/>
+
+                <field name="payment_state" widget="badge" decoration-danger="payment_state == 'not_paid'"
+                       decoration-warning="payment_state in ('partial', 'in_payment')"
+                       decoration-success="payment_state in ('paid', 'reversed')"
+                       attrs="{'invisible': [('payment_state', 'in', ('invoicing_legacy'))]}"/>
+                <field name="invoice_user_id" readonly="1"/>
+                <field name="team_id" optional="hide" readonly="1"/>
+                <field name="invoice_origin" optional="hide" readonly="1"/>
+                <field name="invoice_date_due" optional="hide" readonly="1"/>
+                <field name="untaxed_amount_in_currency" readonly="1" optional="hide"/>
+                <field name="tax_amount_in_currency" readonly="1" optional="hide"/>
+                <field name="total_in_currency" readonly="1" optional="hide"/>
+                <field name="amount_due_in_currency" readonly="1" optional="hide"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="sale_summary_report_action" model="ir.actions.act_window">
+        <field name="name">Sales Summary</field>
+        <field name="res_model">account.move</field>
+        <field name="domain">[('move_type', 'in', ('out_invoice', 'out_refund'))]</field>
+        <field name="view_id" ref="sale_summary_report_tree_view"/>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record id="purchase_summary_report_action" model="ir.actions.act_window">
+        <field name="name">Purchase Summary</field>
+        <field name="res_model">account.move</field>
+        <field name="domain">[('move_type', 'in', ('in_invoice', 'in_refund'))]</field>
+        <field name="view_id" ref="sale_summary_report_tree_view"/>
+        <field name="view_mode">tree</field>
+    </record>
+
+
+    <!--Account Move Line -->
+    <record id="sale_details_report_tree_view" model="ir.ui.view">
+        <field name="name">sale.details.report.tree.view</field>
+        <field name="model">account.move.line</field>
+        <field name="mode">primary</field>
+        <field name="arch" type="xml">
+            <tree string="Sales Details" create="0" delete="0" multi_edit="1" expand="1">
+                <field name="date" optional="hide" readonly="1" invisible="1"/>
+                <field name="product_code" readonly="1"/>
+                <field name="name" string="Name" readonly="1"/>
+                <field name="currency_id" string="Currency" readonly="1"/>
+                <field name="quantity_by_sign" readonly="1" string="Quantity"/>
+                <field name="price_unit" readonly="1" force_save="0"/>
+                <field name="discount" readonly="1"/>
+                <field name="real_subtotal" readonly="1" string="Subtotal"/>
+                <field name="real_tax" readonly="1" string="Tax"/>
+                <field name="real_total" readonly="1" string="Total"/>
+                <field name="company_currency_id" invisible="1"/>
+                <field name="subtotal_in_main_currency" readonly="1" widget='monetary'
+                       options="{'currency_field': 'company_currency_id'}"/>
+                <field name="total_in_main_currency" readonly="1" widget='monetary'
+                       options="{'currency_field': 'company_currency_id'}"/>
+                <field name="type" invisible="1"/>
+                <!--                <field name="test" />-->
+            </tree>
+        </field>
+    </record>
+
+    <record id="sale_details_report_action" model="ir.actions.act_window">
+        <field name="name">Sales Details</field>
+        <field name="context">{'search_default_group_by_move': 1,
+            'name_groupby':1, 'expand': 1}
+        </field>
+        <field name="res_model">account.move.line</field>
+        <field name="domain">[('type', 'in', ('out_invoice',
+            'out_refund')),('exclude_from_invoice_tab','=',False),('display_type', 'not in', ('line_section',
+            'line_note'))]
+        </field>
+        <field name="view_id" ref="sale_details_report_tree_view"/>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record id="purchase_details_report_action" model="ir.actions.act_window">
+        <field name="name">Purchase Details</field>
+        <field name="context">{'search_default_group_by_move': 1,
+            'name_groupby':1, 'expand': 1}
+        </field>
+        <field name="res_model">account.move.line</field>
+        <field name="domain">[('type', 'in', ('in_invoice', 'in_refund')),('exclude_from_invoice_tab','=',False)]
+        </field>
+        <field name="view_id" ref="sale_details_report_tree_view"/>
+        <field name="view_mode">tree</field>
+    </record>
+
+    <record id="view_move_line_tree_grouped_inherit" model="ir.ui.view">
+        <field name="name">view.move.line.tree.inherit.account.accountant.inherit</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="sales_purchases_reports.sale_details_report_tree_view"/>
+        <field name="arch" type="xml">
+            <xpath expr="//tree" position="attributes">
+                <attribute name="js_class">account_move_line_list</attribute>
+            </xpath>
+
+        </field>
+    </record>
+
+
+</odoo>

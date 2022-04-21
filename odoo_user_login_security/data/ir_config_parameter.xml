@@ -1,0 +1,33 @@
+<?xml version='1.0' encoding='UTF-8' ?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<odoo noupdate="True">
+	<record id="inactive_session_time_out_ignored_url" model="ir.config_parameter">
+		<field name="key">odoo_user_login_security.inactive_session_time_out_ignored_url</field>
+		<field name="value">/calendar/notify,/longpolling/poll,/longpolling/im_status</field>
+	</record>
+	<!-- <function
+		model="ir.config_parameter"
+		name="set_param"
+		eval="(
+			'odoo_user_login_security.inactive_session_time_out_ignored_url',
+			'/calendar/notify,/longpolling/poll'
+		)"
+	/> -->
+	<function
+		model="ir.config_parameter"
+		name="set_param"
+		eval="('auth_signup.reset_password', True)"
+	/>
+	<function
+		model="ir.config_parameter"
+		name="set_param"
+		eval="('odoo_user_login_security.login_cooldown_after', 5)"
+	/>
+	<function
+		model="ir.config_parameter"
+		name="set_param"
+		eval="('odoo_user_login_security.login_cooldown_duration', 60)"
+	/>
+</odoo>

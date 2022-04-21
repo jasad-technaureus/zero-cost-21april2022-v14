@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="pos_config_view_form_fiscal_device" model="ir.ui.view">
+        <field name="name">pos_config_view_form_fiscal_device</field>
+        <field name="model">pos.config</field>
+        <field name="inherit_id" ref="point_of_sale.pos_config_view_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//div[@id='barcode_scanner']" position="after">
+                <div class="col-12 col-lg-6 o_setting_box" id="fiscal_devices">
+                    <div class="o_setting_left_pane">
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Fiscal Device</span>
+                        <div class="text-muted">
+                        </div>
+                        <div class="content-group mt16 row">
+                            <label for="fiscal_device_id" string="Fiscal Device" class="col-lg-3 o_light_label"/>
+                            <field name="fiscal_device_id"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 o_setting_box" id="maximum_amount">
+                    <div class="o_setting_left_pane">
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Maximum Amount</span>
+                        <div class="text-muted">
+                        </div>
+                        <div class="content-group mt16 row">
+                            <label for="max_amount" string="Maximum Amount" class="col-lg-3 o_light_label"/>
+                            <field name="max_amount"/>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-12 col-lg-6 o_setting_box" id="mxm_amount_invoice">
+                    <div class="o_setting_left_pane">
+                    </div>
+                    <div class="o_setting_right_pane">
+                        <span class="o_form_label">Maximum Amount Invoice</span>
+                        <div class="text-muted">
+                        </div>
+                        <div class="content-group mt16 row">
+                            <label for="mxm_amount_invoice" string="Maximum Amount Invoice" class="col-lg-3 o_light_label"/>
+                            <field name="mxm_amount_invoice"/>
+                        </div>
+                    </div>
+                </div>
+            </xpath>
+
+        </field>
+    </record>
+</odoo>

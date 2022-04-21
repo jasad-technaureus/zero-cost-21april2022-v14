@@ -1,0 +1,8 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_cost_adjustment_user,cost.adjustments,model_cost_adjustments,base.group_user,1,1,1,0
+access_cost_adjustment_manager,cost.adjustment.manager,model_cost_adjustments,stock.group_stock_manager,1,1,1,1
+access_cost_adjust_warning_manager,cost.adjust.warning.manager,model_cost_adjust_warning,stock.group_stock_manager,1,1,1,1
+access_cost_adjust_warning_user,cost.adjust.warning.user,model_cost_adjust_warning,base.group_user,1,1,1,0
+access_cost_adjust_wizard_manager,cost.adjust.wizard.manager,model_cost_adjust_wizard,stock.group_stock_manager,1,1,1,1
+access_cost_adjust_wizard_user,cost.adjust.wizard.user,model_cost_adjust_wizard,base.group_user,1,1,1,0
+

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="partner_credit_form_view_inherit" model="ir.ui.view">
+        <field name="name">partner.credit.form.view.inherit</field>
+        <field name="model">res.partner</field>
+        <field name="inherit_id" ref="base.view_partner_form"/>
+        <field name="arch" type="xml">
+
+            <xpath expr="//field[@name='property_payment_term_id']" position="after">
+                <field name="company_currency_id" invisible="1"/>
+                <field name="warning_limit" options="{'currency_field': 'company_currency_id'}"/>
+                <field name="blocking_limit" options="{'currency_field': 'company_currency_id'}"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

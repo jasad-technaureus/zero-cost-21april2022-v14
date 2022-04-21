@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Form view of device type-->
+    <record id="devices_type_form_fiscal" model="ir.ui.view">
+        <field name="name">devices.type.form.fiscal</field>
+        <field name="model">device.type</field>
+        <field name="arch" type="xml">
+            <form string="Device type">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                        </group>
+                    </group>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+
+    <record id="fiscal_devices_types_action" model="ir.actions.act_window">
+        <field name="name">Device Types</field>
+        <field name="res_model">device.type</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <!--Form view of fiscal device-->
+    <record id="devices_form_view_fiscal" model="ir.ui.view">
+        <field name="name">devices.form.view.fiscal</field>
+        <field name="model">fiscal.devices</field>
+        <field name="arch" type="xml">
+            <form string="Fiscal Devices">
+                <sheet>
+                    <group>
+                        <group>
+                            <field name="name" required="1"/>
+                            <field name="type"/>
+                            <field name="vat1" domain="[('type_tax_use', '=', 'sale')]"/>
+                            <field name="file_name"/>
+                        </group>
+                        <group>
+                            <field name="vat2" domain="[('type_tax_use', '=', 'sale')]"/>
+                            <field name="vat3" domain="[('type_tax_use', '=', 'sale')]"/>
+                            <field name="vat4" domain="[('type_tax_use', '=', 'sale')]"/>
+                            <field name="vat5" domain="[('type_tax_use', '=', 'sale')]"/>
+                        </group>
+                    </group>
+                    <group>
+                        <group string="Header Template">
+                            <field name="header" nolabel="1" placeholder="Add the static header section here"/>
+                        </group>
+                        <group string="Footer Template">
+                            <field name="footer" nolabel="1" placeholder="Add the dynamic footer here. For dynamic footer values apply = %s. Eg:ALLEG Riga=%s"/>
+                        </group>
+                        <group string="Invoice Footer Template">
+                            <field name="footer_inv" nolabel="1" placeholder="Add the dynamic footer for invoice here."/>
+                        </group>
+                        <group string="Dynamic Product">
+                            <field name="prd_dynamic" nolabel="1" placeholder="For Dynamic product values. For integer values apply =%d, float values apply =%.2f and for string values apply =%s eg: VEND REP=%d,qty=%.2f,PREZZO=%.2f,DES=%s"/>
+                        </group>
+                    </group>
+                </sheet>
+
+            </form>
+        </field>
+    </record>
+
+    <record id="fiscal_devices_action" model="ir.actions.act_window">
+        <field name="name">Fiscal Devices</field>
+        <field name="res_model">fiscal.devices</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="fiscal_device_main" name="Fiscal Device" parent="base.menu_custom" sequence="0"/>
+    <menuitem id="fiscal_devices_types_menu"
+        name="Devices Types"
+        parent="fiscal_device.fiscal_device_main"
+        sequence="3"
+        action="fiscal_devices_types_action"/>
+
+    <menuitem id="fiscal_devices_menu"
+        name="Fiscal Devices"
+        parent="fiscal_device.fiscal_device_main"
+        sequence="3"
+        action="fiscal_devices_action"/>
+</odoo>

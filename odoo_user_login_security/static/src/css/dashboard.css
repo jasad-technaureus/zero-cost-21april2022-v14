@@ -1,0 +1,19 @@
+.card:hover #total_label {
+	color: #2127D2 !important;
+}
+.card:hover #active_label {
+	color: #097811 !important;
+}
+
+.card {
+	box-shadow: 0 0 10px 0 rgba(0,0,0,0.10);
+	border-radius: 2px;
+}
+
+.card:hover {
+	box-shadow: 0 0 10px 0 rgba(0,0,0,0.26);
+}
+
+.o_action_manager {
+	overflow: auto !important;
+}

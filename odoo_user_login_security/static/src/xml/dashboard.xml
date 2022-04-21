@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-Present Webkul Software Pvt. Ltd. (<https://webkul.com/>) -->
+<!-- See LICENSE file for full copyright and licensing details. -->
+<!-- "License URL : <https://store.webkul.com/license.html/>" -->
+<templates id="template" xml:space="preserve">
+	<t t-name="session_dashboard_template">
+		<div class="container m-auto">
+			<div class="row">
+				<t t-call="session_dashboard_carousel"/>
+			</div>
+			<div class="row">
+				<t t-call="session_dashboard_main"/>
+			</div>
+		</div>
+	</t>
+
+	<t t-name="session_dashboard_carousel">
+		<div class="owl-carousel owl-theme" style="padding:4px;">
+			<div
+				t-foreach="widget.browser_sessions"
+				t-as ="browser"
+				style="padding:0px 4px;"
+			>
+				<t t-call="dashboard_carousel_card"/>
+			</div>
+		</div>
+	</t>
+
+	<t t-name="dashboard_carousel_card">
+		<div class="card item" style="padding:30px 20px;">
+			<img
+				t-attf-src="{{browser['browser_logo']}}"
+				alt   ="Generic placeholder image"
+				style ="margin:0 auto;height:100px !important;width:100px !important;"
+			/>
+			<div class="card-body">
+				<h4
+					t-esc="browser['browser_name']"
+					class="text-center font-weight-bold"
+					style="margin-bottom:25px;"
+				/>
+				<div>
+					<a
+						class="dashboard_action"
+						href="#"
+						t-attf-data-browser="{{browser['browser']}}"
+						data-inactive="true"
+					>
+						<div class="row">
+							<div id="total_label" class="col-9 offset-1 pr-0" style="color:#383EEA">
+								Total Sessions :
+							</div>
+							<div
+								t-esc="browser['total_count']"
+								class="col-2 pl-0 font-weight-bold"
+							/>
+						</div>
+					</a>
+					<a
+						class="dashboard_action"
+						href="#"
+						t-attf-data-browser="{{browser['browser']}}"
+					>
+						<div class="row">
+							<div id="active_label" class="col-9 offset-1 pr-0" style="color:#0D9316">
+								Total Active Sessions :
+							</div>
+							<div
+								t-esc="browser['active_count']"
+								class="col-2 pl-0 font-weight-bold"
+							/>
+						</div>
+					</a>
+				</div>
+			</div>
+		</div>
+	</t>
+
+	<t t-name="session_dashboard_main">
+		<div class="col-md-6 col-sm-12" style="padding:4px 4px 4px 8px;">
+			<t t-call="dashboard_recent_card"/>
+		</div>
+		<div class="col-md-6 col-sm-12" style="padding:4px 8px 4px 4px;">
+			<t t-call="dashboard_chart_card"/>
+		</div>
+	</t>
+
+	<t t-name="dashboard_recent_card">
+		<div class="card" style="height:100%;">
+			<div class="font-weight-bold p-4 border-bottom">
+				<h4>Recent Active Logins</h4>
+			</div>
+			<div class="table-responsive">
+				<table class="table table-borderless table-striped table-hover">
+					<thead>
+						<tr>
+							<th>Browser</th>
+							<th>Platform</th>
+							<th><i class="fa fa-user"/> User</th>
+							<th><i class="fa fa-sitemap"/> IP Address</th>
+							<th><i class="fa fa-calendar"/> Date</th>
+						</tr>
+					</thead>
+					<tbody>
+						<t t-foreach="widget.recent_sessions" t-as="session">
+							<tr
+								class="border-top clickable-row dashboard_action"
+								style="height:60px;cursor:pointer;"
+								t-attf-data-id="{{session['id']}}"
+							>
+								<td style="vertical-align:middle">
+									<img
+										t-attf-src="{{session['browser_logo']}}"
+										alt   ="Generic placeholder image"
+										height="60"
+										width ="60"
+										style ="margin:0 auto;"
+									/>
+								</td>
+								<td style="vertical-align:middle">
+									<img
+										t-attf-src="{{session['platform_logo']}}"
+										alt   ="Generic placeholder image"
+										height="60"
+										width ="60"
+										style ="margin:0 auto;"
+									/>
+								</td>
+								<td
+									t-esc="session['user']"
+									style="vertical-align:middle"
+								/>
+								<td
+									t-esc="session['ip']"
+									style="vertical-align:middle"
+								/>
+								<td
+									t-esc="session['date_login']"
+									style="vertical-align:middle"
+								/>
+							</tr>
+						</t>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</t>
+
+	<t t-name="dashboard_chart_card">
+		<div class="card" style="height:100%;">
+			<div class="font-weight-bold p-4 border-bottom">
+				<h4>Session by Status</h4>
+			</div>
+			<div class="chart_container m-3" style="height:100%;">
+				<canvas id="dashboard_pi_chart"/>
+			</div>
+		</div>
+	</t>
+</templates>

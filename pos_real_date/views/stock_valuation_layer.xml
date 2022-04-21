@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="pos_real_stock_valuation_layer_tree" model="ir.ui.view">
+        <field name="name">pos_real.stock.valuation.layer.tree</field>
+        <field name="model">stock.valuation.layer</field>
+        <field name="inherit_id" ref="stock_account.stock_valuation_layer_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='sale_order_id']" position="after">
+                <field name="pos_order_id"/>
+            </xpath>
+            <xpath expr="//field[@name='margin_per']" position="attributes">
+                <attribute name="attrs">{'invisible': [('pos_order_id','=',False),('move_type', '!=', 'out_invoice')]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='markup_per']" position="attributes">
+                <attribute name="attrs">{'invisible': [('pos_order_id','=',False),('move_type', '!=', 'out_invoice')]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoiced_unit_price']" position="attributes">
+                <attribute name="attrs">{'invisible': [('pos_order_id','=',False),('move_type', '!=', 'out_invoice')]}
+                </attribute>
+            </xpath>
+            <xpath expr="//field[@name='invoiced_amount']" position="attributes">
+                <attribute name="attrs">{'invisible': [('pos_order_id','=',False),('move_type', '!=', 'out_invoice')]}
+                </attribute>
+            </xpath>
+        </field>
+    </record>
+</odoo>

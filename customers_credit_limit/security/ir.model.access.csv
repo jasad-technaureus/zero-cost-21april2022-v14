@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+credit_warning_wizard_user,credit_warning_wizard_user,customers_credit_limit.model_credit_warning_wizard,base.group_system,1,1,1,0
+credit_blocking_wizard_user,credit_blocking_wizard_user,customers_credit_limit.model_credit_blocking_wizard,base.group_system,1,1,1,0
+

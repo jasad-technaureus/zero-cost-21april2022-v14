@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="cost_adjustment_tree" model="ir.ui.view">
+        <field name="name">cost.adjustment.tree</field>
+        <field name="model">cost.adjustments</field>
+        <field name="arch" type="xml">
+
+            <tree string="Cost Adjustments" editable="bottom" create="false" delete="false">
+                <header>
+                    <button name="cost_adjustment" type="object" string="Adjust" class="oe_highlight"
+                    />
+                </header>
+                <field name="product_id"/>
+                <field name="from_date"/>
+                <field name="count"/>
+                <field name="is_from_bll" invisible="1"/>
+
+                <button name="cost_adjustment" type="object" string="Adjust" class="oe_highlight"
+                        attrs="{'invisible': [('product_id', '=', False)]}"/>
+            </tree>
+        </field>
+    </record>
+    <record id="cost_adjustment_action" model="ir.actions.act_window">
+        <field name="name">Cost Adjustments</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">cost.adjustments</field>
+        <field name="view_id" ref="cost_adjustment_tree"/>
+        <field name="view_mode">tree,form</field>
+        <field name="help" type="xml">
+            <p class="o_view_nocontent_smiling_face"/>
+            <p>
+                There are no products for adjustments
+            </p>
+        </field>
+    </record>
+
+    <record id="adjust_cost_warning_wizard" model="ir.ui.view">
+        <field name="name">adjust.cost.warning.wizard</field>
+        <field name="model">cost.adjust.warning</field>
+        <field name="arch" type="xml">
+            <form string="Adjust Cost?">
+                <group>
+
+                    <p>You are going to adjust the cost. Are you sure you want to continue?
+                    </p>
+                </group>
+
+                <footer>
+                    <button name="confirm" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Cancel" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <record id="adjust_cost_wizard" model="ir.ui.view">
+        <field name="name">adjust.cost.wizard</field>
+        <field name="model">cost.adjust.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Adjust Cost?">
+                <group>
+                    <group>
+
+                        <field name='date_from'/>
+                    </group>
+
+                    <group>
+
+                        <field name='date_to'/>
+
+                    </group>
+                </group>
+                <footer>
+                    <button name="confirm_adjust" string="Confirm" type="object" class="btn-primary"/>
+                    <button string="Discard" class="btn-secondary" special="cancel"/>
+                </footer>
+            </form>
+        </field>
+    </record>
+
+    <menuitem id="menu_cost_adjustment" name="Cost Adjustments" sequence="134"
+              parent="stock.menu_stock_warehouse_mgmt"
+              action="cost_adjustment_action"/>
+
+
+</odoo>

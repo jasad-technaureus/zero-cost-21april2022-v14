@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <!--Form view of device type-->
+    <record id="purchase_book_wizard_from_view" model="ir.ui.view">
+        <field name="name">purchase.book.wizard.from.view</field>
+        <field name="model">purchase.book.wizard</field>
+        <field name="arch" type="xml">
+            <form string="Purchase Book">
+                <sheet>
+                    <group col="4" colspan="4" attrs="{'invisible':[('report_printed','=',True)]}">
+                        <field name="filter_type"/>
+                        <field name="month" attrs="{'invisible': [('filter_type', '=', 'by_date')]}"/>
+                    </group>
+                    <group col="4" colspan="4" attrs="{'invisible':[('report_printed','=',True)]}">
+                        <field name="from_date"/>
+                        <field name="to_date"/>
+                    </group>
+                    <field name="report_printed" invisible="1"/>
+
+                    <field name="purchase_book_file" readonly="1" filename="file_name" attrs="{'invisible':[('report_printed','=',False)]}"/>
+                    <field name="file_name" invisible="1"/>
+                    <footer>
+                        <button name="print_xls_report" string="Print xlsx" type="object" class="btn-primary"
+                            attrs="{'invisible':[('report_printed','=',True)]}"/>
+                        <button string="Cancel" class="btn btn-secondary" special="cancel"/>
+                    </footer>
+                </sheet>
+            </form>
+        </field>
+    </record>
+
+    <record id="purchase_book_wizard_action" model="ir.actions.act_window">
+        <field name="name">Purchase Book</field>
+        <field name="res_model">purchase.book.wizard</field>
+        <field name="view_mode">form</field>
+        <field name="target">new</field>
+    </record>
+
+    <menuitem id="fiscal_reports_menu"
+              name="Fiscal Reports"
+              parent="account.menu_finance_reports"
+              sequence="0">
+        <menuitem id="purchase_book_wizard_menu"
+                  name="Purchase Book"
+                  action="purchase_book_wizard_action"
+                  sequence="0"/>
+
+    </menuitem>
+</odoo>

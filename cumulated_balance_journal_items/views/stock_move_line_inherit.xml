@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<odoo>
+
+    <record id="account_move_line_partner_tree_inherit" model="ir.ui.view">
+        <field name="name">account.move.line.partner.tree.inherit</field>
+        <field name="model">account.move.line</field>
+        <field name="inherit_id" ref="account.view_move_line_tree_grouped_partner"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='amount_currency']" position="after">
+                <field name="debit_in_currency" sum="Total Debit in Currency"/>
+                <field name="credit_in_currency" sum="Total Credit in Currency"/>
+                <field name="balance_in_currency"/>
+            </xpath>
+        </field>
+    </record>
+</odoo>

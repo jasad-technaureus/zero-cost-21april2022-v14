@@ -1,0 +1,87 @@
+<?xml version='1.0' encoding='utf-8'?>
+<odoo>
+
+    <record id="auto_receipt_account_move_view" model="ir.ui.view">
+        <field name="name">auto.receipt.account.move.view</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_vendor_bill_id']" position="after">
+                <field name="is_from_po_or_so" invisible="1"/>
+                <field name="picking_ids" invisible="1"/>
+                <field name="auto_payment"
+                       attrs="{'invisible': ['|',('move_type','not in',('out_invoice','in_invoice')),('is_from_po_or_so','=',True)]}"/>
+                <field name="payment_journal_id"
+                       attrs="{'invisible': ['|',('auto_payment','=',False),('move_type','not in',('out_invoice','in_invoice'))]}"
+                       domain="[('type', 'in', ['bank','cash'])]"/>
+
+
+                <field name="auto_inventory" string="Auto Delivery"
+                       attrs="{'invisible': ['|',('move_type','!=','out_invoice'),('is_from_po_or_so','=',True)]}"/>
+                <field name="auto_inventory" string="Auto Receipt"
+                       attrs="{'invisible': ['|',('move_type','!=','in_invoice'),('is_from_po_or_so','=',True)]}"/>
+                <field name="warehouse_id"
+                       attrs="{'invisible': ['|',('auto_inventory','=',False),('move_type','not in',('out_invoice'))]}"/>
+
+                <field name="operation_type_id"
+                       attrs="{'invisible': ['|',('auto_inventory','=',False),('move_type','not in',('in_invoice'))]}"
+                       domain="[('code', '=', 'incoming')]"/>
+            </xpath>
+            <xpath expr="//field[@name='currency_id']" position="attributes">
+                <attribute name="attrs">{'readonly': ['|',('pricelist_id', '!=', False),('state','!=','draft'),('move_type','=','out_invoice')]}</attribute>
+
+            </xpath>
+            <xpath expr="//div[hasclass('oe_button_box')]" position="inside">
+
+                <button type="object"
+                        name="action_view_picking"
+                        class="oe_stat_button"
+                        icon="fa-truck" attrs="{'invisible':[('picking_ids','=',[])]}">
+                    <field name="picking_count" widget="statinfo" string=" " help="Incoming Shipments"
+                           attrs="{'invisible':[('picking_ids','=',[])]}" style="margin-top: -16px;"/>
+                    <span class="o_stat_value" attrs="{'invisible': [('move_type', '=', 'out_invoice')]}"
+                          style="margin-top: 16px;margin-left: -15px;">
+                        Receipt
+                    </span>
+                    <span class="o_stat_value" attrs="{'invisible': [('move_type', '=', 'in_invoice')]}"
+                          style="margin-top: 16px;margin-left: -15px;">
+                        Delivery
+                    </span>
+
+                </button>
+            </xpath>
+            <xpath expr="//button[@name='button_draft']" position="attributes">
+                <attribute name="attrs">{'invisible': ['|',('show_reset_to_draft_button', '=',
+                    False),('auto_inventory','=',True)]}
+                </attribute>
+            </xpath>
+            <xpath expr="//label[@for='journal_id']" position="before">
+                <!--                <label for="pricelist_id" groups="product.group_product_pricelist"-->
+                <!--                       attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>-->
+
+
+                <label for="pricelist_id" groups="product.group_product_pricelist"
+                       attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+                <div class="d-flex" groups="product.group_product_pricelist"
+                     attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}">
+                    <field style="width: 54%;" name="pricelist_id" groups="product.group_product_pricelist"
+                           options="{'no_open':True,'no_create': True}"
+                           attrs="{'invisible': [('move_type', '!=', 'out_invoice')]}"/>
+                    <button name="update_prices" type="object"
+                            string=" Update Prices" style="margin-top:-5px !important;"
+                            help="Recompute all prices based on this pricelist"
+                            class="btn-link ml-1 p-0" icon="fa-refresh"
+                            confirm="This will update all unit prices based on the currently set pricelist."
+                            attrs="{'invisible': ['|', ('show_update_pricelist', '=', False),('state', 'in', ['posted','cancel'])]}"/>
+                </div>
+
+                <field name="show_update_pricelist" invisible="1"/>
+
+            </xpath>
+
+        </field>
+
+
+    </record>
+</odoo>
+

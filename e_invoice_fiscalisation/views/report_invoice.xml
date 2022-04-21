@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <template id="qr_code_invoice" inherit_id="account.report_invoice_document">
+        <!--        <xpath expr="//t[@t-set='address']" position="before">-->
+        <xpath expr="//t[@t-set='address']" position="before">
+            <div class="fiscal_info">
+                <style>
+                    .fiscal_info {
+                    position: absolute;
+                    top: 10px;
+                    }
+                    .page {
+                    margin-top: 30px !important;
+                    }
+                </style>
+                <span>
+
+                    <span>Operator Code:
+                        <t t-esc="o.user_id.operator_code"/>
+                    </span>
+                    <br/>
+                    <span>Business Unit Code:
+                        <t t-esc="o.user_id.business_unit_code"/>
+                    </span>
+                    <br/>
+                    <span>Software Code:
+                        <t t-esc="o.company_id.software_code"/>
+                    </span>
+                    <br/>
+                    <span>IIC:
+                        <t t-esc="o.iic"/>
+                    </span>
+                    <br/>
+                    <span>FIC:
+                        <t t-esc="o.fic"/>
+                    </span>
+                    <br/>
+                    <span>Invoice Type:
+                        <t t-esc="o.type_of_inv"/>
+                    </span>
+                    <br/>
+
+                </span>
+            </div>
+        </xpath>
+
+         <xpath expr="//t/div[hasclass('page')]/h2/span[7]" position="replace">
+             <span t-if="o.inv_num != '/'" t-field="o.inv_num"/>
+         </xpath>
+
+        <xpath expr="//div[@id='qrcode']" position="after">
+            <!--            <span t-field="o.qr_code" t-field-options='{"widget": "image"}'/>-->
+            <t t-if="o.print_qr_code">
+                <div class="col-6">
+                    <span>
+                        <h5>e-Fiscalisation QR Code</h5>
+                    </span>
+                    <img t-attf-src="data:image/*;base64,{{o.qr_code}}" style="width:100px; height:100px;"/>
+                </div>
+            </t>
+        </xpath>
+    </template>
+</odoo>

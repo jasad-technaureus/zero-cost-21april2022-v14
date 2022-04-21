@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_sale_book_mapping_tree" model="ir.ui.view">
+        <field name="name">view_sale_book_mapping_tree</field>
+        <field name="model">sale.book.mapping</field>
+        <field name="arch" type="xml">
+            <tree string="sale Book Mapping" editable="bottom">
+                <field name="book_column"/>
+                <field name="fiscal_position_id" options="{'no_create': True}"/>
+                <field name="tax_id" options="{'no_create': True}" domain="[('type_tax_use', '=', 'sale')]"/>
+                <field name="value"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_sale_book_mapping" model="ir.actions.act_window">
+        <field name="name">Sale Book Mapping</field>
+        <field name="res_model">sale.book.mapping</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_sale_book_mapping"
+              name="Sale Book Mapping"
+              parent="account.account_invoicing_menu"
+              action="action_sale_book_mapping"
+              sequence="1"/>
+</odoo>

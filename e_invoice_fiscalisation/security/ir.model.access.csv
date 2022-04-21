@@ -1,0 +1,5 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+
+access_payment_method_manager,access.payment.method.manager,model_payment_methods,base.group_user,1,0,0,0
+access_payment_method_user,access.payment.method.user,model_payment_methods,account.group_account_manager,1,1,1,1
+

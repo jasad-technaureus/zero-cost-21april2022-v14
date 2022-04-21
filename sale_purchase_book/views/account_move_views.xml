@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="account_move_view_form_fiscal_printer" model="ir.ui.view">
+        <field name="name">account_move_view_form_fiscal_printer</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='invoice_date']" position="after">
+                <field name="not_in_book" attrs="{'invisible': [('move_type', '=', 'entry')]}"/>
+                <field name="customs" attrs="{'invisible': [('move_type', '!=', 'in_invoice')]}"/>
+                <field name="vendor_bill" attrs="{'invisible': [('customs', '=', False)]}"
+                       domain="[('move_type', '=', 'in_invoice')]"/>
+                <field name="rel_vendor" attrs="{'invisible': [('customs', '=', False)]}"/>
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="after">
+                <field name="ref_2"
+                       attrs="{'invisible': [('move_type', 'not in', ('in_invoice', 'in_refund', 'out_invoice', 'out_refund'))],'readonly': [('state', '=', 'posted')]}"/>
+
+
+            </xpath>
+            <xpath expr="//field[@name='ref']" position="replace">
+                <field name="ref" string="Invoice No"
+                       attrs="{'readonly': [('state', '=', 'posted')],'invisible': [('move_type', '=', 'entry')]}"/>
+                <!--                <field name="ref" attrs="{'invisible': [('move_type', 'not in',-->
+
+
+            </xpath>
+
+            <xpath expr="//label[@for='ref']" position="replace">
+                <!--                <attribute name="string">Invoice No</attribute>-->
+                <!--                <attribute name="attrs">{'readonly': [('state', '=',-->
+                <!--                    'posted')],'required':[('move_type','in',('in_invoice', 'in_refund', 'out_invoice', 'out_refund'))]}-->
+                <!--                </attribute>-->
+            </xpath>
+            <xpath expr="//page[@id='other_tab']/group/group/label[@for='ref']" position="attributes">
+                <attribute name="invisible">1</attribute>
+
+            </xpath>
+            <xpath expr="//page[@id='other_tab']/group/group/field[@name='ref']" position="attributes">
+                <attribute name="invisible">1</attribute>
+            </xpath>
+        </field>
+    </record>
+    <record id="inherit_view_Bill_search_tree" model="ir.ui.view">
+        <field name="name">account.move.search.tree</field>
+        <field name="model">account.move</field>
+        <field eval="2" name="priority"/>
+        <field name="arch" type="xml">
+            <tree string="">
+                <field name="name"/>
+                <field name="ref" string="Invoice No"/>
+                <field name="ref_2"/>
+                <field name="partner_id" string="Vendor"/>
+                <field name="company_id"/>
+                <field name="amount_untaxed_signed" string="Tax Excluded" sum="Total"/>
+                <field name="amount_total_signed" string="Total"/>
+                <field name="amount_total" string="Total in Currency"/>
+                <field name="state" widget="badge" decoration-info="state == 'draft'"
+                       decoration-success="state == 'posted'"/>
+                <field name="payment_state" widget="badge" decoration-danger="payment_state == 'not_paid'"
+                       decoration-warning="payment_state in ('partial', 'in_payment')"
+                       decoration-success="payment_state in ('paid', 'reversed')"
+                       attrs="{'invisible': [('payment_state', 'in', ('invoicing_legacy'))]}"/>
+                <field name="currency_id" invisible="1"/>
+                <field name="company_currency_id" invisible="1"/>
+
+
+            </tree>
+        </field>
+    </record>
+    <record id="inherit_crm_case_form_view_job" model="ir.ui.view">
+        <field name="name">Jobs - Recruitment Form</field>
+        <field name="model">account.move</field>
+        <field name="inherit_id" ref="account.view_move_form"/>
+        <field name="arch" type="xml">
+            <field name="ref" position="attributes">
+                <attribute name="context">{'tree_view_ref': 'inherit_view_Bill_search_tree'}</attribute>
+            </field>
+        </field>
+    </record>
+</odoo>

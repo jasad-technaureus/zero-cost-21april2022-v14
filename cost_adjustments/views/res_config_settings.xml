@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <record id="res_config_settings_cost_adjustment_view_form" model="ir.ui.view">
+            <field name="name">res.config.settings.cost.adjustment.view.form.inherit</field>
+            <field name="model">res.config.settings</field>
+            <field name="inherit_id" ref="stock.res_config_settings_view_form"/>
+            <field name="arch" type="xml">
+                <xpath expr="//div[@name='valuation_setting_container']" position="inside">
+                    <div class="col-12 col-lg-6 o_setting_box" groups="base.group_no_one"
+                         id="auto_cost_adjust_setting">
+                        <div class="o_setting_left_pane">
+                            <field name="automatic_cost_adjustment"/>
+                        </div>
+                        <div class="o_setting_right_pane">
+                            <label for="automatic_cost_adjustment" string="Automatic Cost Adjustment"/>
+                        </div>
+                    </div>
+                </xpath>
+            </field>
+        </record>
+    </data>
+</odoo>

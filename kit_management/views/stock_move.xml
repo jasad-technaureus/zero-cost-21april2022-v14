@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<odoo>
+
+    <record id="product_kit_stock_move" model="ir.ui.view">
+        <field name="name">product.kit.stock.move</field>
+        <field name="model">stock.move</field>
+        <field name="inherit_id" ref="stock.view_move_form"/>
+        <field name="arch" type="xml">
+            <xpath expr="//field[@name='product_id']" position="after">
+                <field name="kit_line_id" invisible="1"/>
+
+            </xpath>
+        </field>
+    </record>
+</odoo>

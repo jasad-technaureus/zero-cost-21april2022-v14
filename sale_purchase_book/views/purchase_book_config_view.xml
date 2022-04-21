@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <record id="view_purchase_book_mapping_tree" model="ir.ui.view">
+        <field name="name">view_purchase_book_mapping_tree</field>
+        <field name="model">purchase.book.mapping</field>
+        <field name="arch" type="xml">
+            <tree string="Purchase Book Mapping" editable="bottom">
+                <field name="book_column"/>
+                <field name="fiscal_position_id" options="{'no_create': True}"/>
+                <field name="tax_id" options="{'no_create': True}" domain="[('type_tax_use', '=', 'purchase')]"/>
+                <field name="value"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="action_purchase_book_mapping" model="ir.actions.act_window">
+        <field name="name">Purchase Book Mapping</field>
+        <field name="res_model">purchase.book.mapping</field>
+        <field name="view_mode">tree,form</field>
+    </record>
+
+    <menuitem id="menu_purchase_book_mapping"
+              name="Purchase Book Mapping"
+              parent="account.account_invoicing_menu"
+              action="action_purchase_book_mapping"
+              sequence="1"/>
+</odoo>

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+        <template id="invoice_register_template">
+            <SOAP-ENV:Envelope xmlns:SOAP-ENV="http://schemas.xmlsoap.org/soap/envelope/">
+                <SOAP-ENV:Header/>
+                <SOAP-ENV:Body>
+                    <RegisterInvoiceRequest xmlns="https://eFiskalizimi.tatime.gov.al/FiscalizationService/schema"
+                                            Id="Request" Version="3">
+                        {header}
+                        {invoice}
+                            <PayMethods>
+                                <PayMethod Amt="{amount_total}" Type="{payment_type}"/>
+                            </PayMethods>
+                            <Seller Address="{street}" Country="{country_fiscalisation_code}" IDNum="{vat}"
+                                    IDType="{id_type}"
+                                    Name="{comp_name}"
+                                    Town="{city}"/>
+                            {buyer}
+                            <Items>{con_items}</Items>
+                            <SameTaxes>{con_same_taxes}</SameTaxes>
+                            {corrective_inv}
+                            {bad_debt_inv}
+                            {currency}
+                        {invoice_close}
+                    </RegisterInvoiceRequest>
+                </SOAP-ENV:Body>
+            </SOAP-ENV:Envelope>
+        </template>
+    </data>
+</odoo>
