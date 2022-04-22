@@ -840,6 +840,7 @@ class StockMove(models.Model):
 
         # self cannot contain moves that are either cancelled or done, therefore we can safely
         # unlink all associated move_line_ids
+        print('moves_to_cancel', moves_to_cancel)
         moves_to_cancel._do_unreserve()
 
         for move in moves_to_cancel:
@@ -850,13 +851,14 @@ class StockMove(models.Model):
             out_quant = self.env['stock.quant'].search(
                 [('location_id', '=', move.location_id.id), ('product_id', '=', move.product_id.id)])
             print('out_quants.....2', out_quant, out_quant.sudo().quantity)
-            if move.state == 'done':
-                if move._is_in() and move:
-                    in_quant.sudo().quantity -= move.product_uom_qty
-                    out_quant.sudo().quantity += move.product_uom_qty
-                else:
-                    out_quant.sudo().quantity += move.product_uom_qty
-                    in_quant.sudo().quantity -= move.product_uom_qty
+            # if move.state == 'done':
+            if move._is_in() and move:
+                in_quant.sudo().quantity -= move.product_uom_qty
+                out_quant.sudo().quantity += move.product_uom_qty
+                print('quant..', out_quant.sudo().quantity, in_quant.sudo().quantity, )
+            else:
+                out_quant.sudo().quantity += move.product_uom_qty
+                in_quant.sudo().quantity -= move.product_uom_qty
             if move.propagate_cancel:
                 # only cancel the next move if all my siblings are also cancelled
                 if all(state == 'cancel' for state in siblings_states):
