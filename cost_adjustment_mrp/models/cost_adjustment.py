@@ -37,7 +37,7 @@ class CostAdjustments(models.Model):
                     first_layer = valuation_layers.sorted(key=lambda x: x.real_date)
                     out_layers = valuation_layers_all.filtered(
                         lambda x: (
-                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[0].real_date).sorted(
                         key=lambda x: x.real_date)
                     real_dates = valuation_layers_all.mapped('real_date')
@@ -66,16 +66,16 @@ class CostAdjustments(models.Model):
                         in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                         print('in_layer--', in_layer)
                         return_out = real_date_dict[date].filtered(
-                            lambda x: x.value < 0 and x.stock_move_id.origin_returned_move_id)
+                            lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
                         normal_out = real_date_dict[date].filtered(
-                            lambda x: x.value < 0 and not x.stock_move_id.origin_returned_move_id)
+                            lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
                         combine = in_layer + return_out + normal_out
                         print('combine', combine)
                         new_layers += combine
                     print('new_layers.....', new_layers)
                     out_layer_new = new_layers.filtered(
                         lambda x: (
-                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[0].real_date)
                     print('before........', out_layers)
                     out_layers = out_layer_new
@@ -156,7 +156,7 @@ class CostAdjustments(models.Model):
                                     svl.account_move_id.action_post()
                                     out_layers = valuation_layers_all.filtered(
                                         lambda x: (
-                                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                                   svl.real_date).sorted(
                                         key=lambda x: x.real_date)
                                     print('out_layers..........', out_layers)
@@ -229,7 +229,7 @@ class CostAdjustments(models.Model):
                                 svl.account_move_id.action_post()
                                 out_layers = valuation_layers_all.filtered(
                                     lambda x: (
-                                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                               svl.real_date).sorted(
                                     key=lambda x: x.real_date)
                                 for layer in out_layers:
@@ -281,7 +281,7 @@ class CostAdjustments(models.Model):
                         new_layers = self.env['stock.valuation.layer']
                         out_layers = valuation_layers_all.filtered(
                             lambda x: (
-                                              x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                              x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                       first_layer[
                                           0].real_date).sorted(
                             key=lambda x: x.real_date)
@@ -298,16 +298,16 @@ class CostAdjustments(models.Model):
                             in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                             print('in_layer--', in_layer)
                             return_out = real_date_dict[date].filtered(
-                                lambda x: x.value < 0 and x.stock_move_id.origin_returned_move_id)
+                                lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
                             normal_out = real_date_dict[date].filtered(
-                                lambda x: x.value < 0 and not x.stock_move_id.origin_returned_move_id)
+                                lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
                             combine = in_layer + return_out + normal_out
                             print('combine', combine)
                             new_layers += combine
                         print('new_layers.....', new_layers)
                         out_layer_new = new_layers.filtered(
                             lambda x: (
-                                              x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                              x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                       first_layer[0].real_date)
                         print('before........', out_layers)
                         out_layers = out_layer_new
@@ -385,7 +385,7 @@ class CostAdjustments(models.Model):
                 first_layer = valuation_layers.sorted(key=lambda x: x.real_date)
                 out_layers = valuation_layers_all.filtered(
                     lambda x: (
-                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                               first_layer[0].real_date).sorted(
                     key=lambda x: x.real_date)
                 print('kkkkk', out_layers)
@@ -413,16 +413,16 @@ class CostAdjustments(models.Model):
                     in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                     print('in_layer--', in_layer)
                     return_out = real_date_dict[date].filtered(
-                        lambda x: x.value < 0 and x.stock_move_id.origin_returned_move_id)
+                        lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
                     normal_out = real_date_dict[date].filtered(
-                        lambda x: x.value < 0 and not x.stock_move_id.origin_returned_move_id)
+                        lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
                     combine = in_layer + return_out + normal_out
                     print('combine', combine)
                     new_layers += combine
                 print('new_layers.....', new_layers)
                 out_layer_new = new_layers.filtered(
                     lambda x: (
-                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                               first_layer[0].real_date)
                 print('before........', out_layers)
                 out_layers = out_layer_new
@@ -502,7 +502,7 @@ class CostAdjustments(models.Model):
                             svl.account_move_id.action_post()
                             out_layers = valuation_layers_all.filtered(
                                 lambda x: (
-                                                  x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                                  x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                           svl.real_date).sorted(
                                 key=lambda x: x.real_date)
                             print('out_layers..........', out_layers)
@@ -573,7 +573,7 @@ class CostAdjustments(models.Model):
                         svl.account_move_id.action_post()
                         out_layers = valuation_layers_all.filtered(
                             lambda x: (
-                                              x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                              x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                       svl.real_date).sorted(
                             key=lambda x: x.real_date)
                         for layer in out_layers:
@@ -628,7 +628,7 @@ class CostAdjustments(models.Model):
                     new_layers = self.env['stock.valuation.layer']
                     out_layers = valuation_layers_all.filtered(
                         lambda x: (
-                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[
                                       0].real_date).sorted(
                         key=lambda x: x.real_date)
@@ -645,16 +645,16 @@ class CostAdjustments(models.Model):
                         in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                         print('in_layer--', in_layer)
                         return_out = real_date_dict[date].filtered(
-                            lambda x: x.value < 0 and x.stock_move_id.origin_returned_move_id)
+                            lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
                         normal_out = real_date_dict[date].filtered(
-                            lambda x: x.value < 0 and not x.stock_move_id.origin_returned_move_id)
+                            lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
                         combine = in_layer + return_out + normal_out
                         print('combine', combine)
                         new_layers += combine
                     print('new_layers.....', new_layers)
                     out_layer_new = new_layers.filtered(
                         lambda x: (
-                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[0].real_date)
                     print('before........', out_layers)
                     out_layers = out_layer_new
@@ -738,7 +738,7 @@ class CostAdjustWarning(models.TransientModel):
                 first_layer = valuation_layers.sorted(key=lambda x: x.real_date)
                 out_layers = valuation_layers_all.filtered(
                     lambda x: (
-                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                               first_layer[0].real_date).sorted(
                     key=lambda x: x.real_date)
 
@@ -766,16 +766,16 @@ class CostAdjustWarning(models.TransientModel):
                     in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                     print('in_layer--', in_layer)
                     return_out = real_date_dict[date].filtered(
-                        lambda x: x.value < 0 and x.stock_move_id.origin_returned_move_id)
+                        lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
                     normal_out = real_date_dict[date].filtered(
-                        lambda x: x.value < 0 and not x.stock_move_id.origin_returned_move_id)
+                        lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
                     combine = in_layer + return_out + normal_out
                     print('combine', combine)
                     new_layers += combine
                 print('new_layers.....', new_layers)
                 out_layer_new = new_layers.filtered(
                     lambda x: (
-                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                               first_layer[0].real_date)
                 print('before........', out_layers)
                 out_layers = out_layer_new
@@ -873,7 +873,7 @@ class CostAdjustWarning(models.TransientModel):
                             svl.account_move_id.action_post()
                             out_layers = valuation_layers_all.filtered(
                                 lambda x: (
-                                                  x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                                  x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                           svl.real_date).sorted(
                                 key=lambda x: x.real_date)
                             for layer in out_layers:
@@ -932,7 +932,7 @@ class CostAdjustWarning(models.TransientModel):
                             svl.account_move_id.action_post()
                             out_layers = valuation_layers_all.filtered(
                                 lambda x: (
-                                                  x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                                  x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                           svl.real_date).sorted(
                                 key=lambda x: x.real_date)
                             for layer in out_layers:
@@ -975,7 +975,7 @@ class CostAdjustWarning(models.TransientModel):
                     new_layers = self.env['stock.valuation.layer']
                     out_layers = valuation_layers_all.filtered(
                         lambda x: (
-                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[
                                       0].real_date).sorted(
                         key=lambda x: x.real_date)
@@ -991,9 +991,9 @@ class CostAdjustWarning(models.TransientModel):
                         in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                         print('in_layer--', in_layer)
                         return_out = real_date_dict[date].filtered(
-                            lambda x: x.value < 0 and x.stock_move_id.origin_returned_move_id)
+                            lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
                         normal_out = real_date_dict[date].filtered(
-                            lambda x: x.value < 0 and not x.stock_move_id.origin_returned_move_id)
+                            lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
                         combine = in_layer + return_out + normal_out
                         print('combine', combine)
                         new_layers += combine
@@ -1001,7 +1001,7 @@ class CostAdjustWarning(models.TransientModel):
 
                     out_layer_new = new_layers.filtered(
                         lambda x: (
-                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[0].real_date)
                     print('before........x', out_layers)
                     out_layers = out_layer_new
@@ -1132,12 +1132,12 @@ class CostAdjustWizard(models.TransientModel):
                 first_layer = valuation_layers.sorted(key=lambda x: x.real_date)
                 out_layers = valuation_layers_all.filtered(
                     lambda x: (
-                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                               first_layer[0].real_date).sorted(
                     key=lambda x: x.real_date)
                 all_layer_to_correct = all_layer.filtered(
                     lambda x: (
-                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                               first_layer[0].real_date).sorted(
                     key=lambda x: x.real_date)
 
@@ -1165,16 +1165,16 @@ class CostAdjustWizard(models.TransientModel):
                     in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                     print('in_layer--', in_layer)
                     return_out = real_date_dict[date].filtered(
-                        lambda x: x.value < 0 and x.stock_move_id.origin_returned_move_id)
+                        lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
                     normal_out = real_date_dict[date].filtered(
-                        lambda x: x.value < 0 and not x.stock_move_id.origin_returned_move_id)
+                        lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
                     combine = in_layer + return_out + normal_out
                     print('combine', combine)
                     new_layers += combine
                 print('new_layers.....', new_layers)
                 out_layer_new = new_layers.filtered(
                     lambda x: (
-                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                               first_layer[0].real_date)
                 print('before........', out_layers)
                 out_layers = out_layer_new
@@ -1271,7 +1271,7 @@ class CostAdjustWizard(models.TransientModel):
                             svl.account_move_id.action_post()
                             out_layers = valuation_layers_all.filtered(
                                 lambda x: (
-                                                  x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                                  x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                           svl.real_date).sorted(
                                 key=lambda x: x.real_date)
                             for layer in out_layers:
@@ -1330,7 +1330,7 @@ class CostAdjustWizard(models.TransientModel):
                             svl.account_move_id.action_post()
                             out_layers = valuation_layers_all.filtered(
                                 lambda x: (
-                                                  x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                                  x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                           svl.real_date).sorted(
                                 key=lambda x: x.real_date)
                             for layer in out_layers:
@@ -1373,7 +1373,7 @@ class CostAdjustWizard(models.TransientModel):
                     new_layers = self.env['stock.valuation.layer']
                     out_layers = valuation_layers_all.filtered(
                         lambda x: (
-                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[
                                       0].real_date).sorted(
                         key=lambda x: x.real_date)
@@ -1390,16 +1390,16 @@ class CostAdjustWizard(models.TransientModel):
                         in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                         print('in_layer--', in_layer)
                         return_out = real_date_dict[date].filtered(
-                            lambda x: x.value < 0 and x.stock_move_id.origin_returned_move_id)
+                            lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
                         normal_out = real_date_dict[date].filtered(
-                            lambda x: x.value < 0 and not x.stock_move_id.origin_returned_move_id)
+                            lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
                         combine = in_layer + return_out + normal_out
                         print('combine', combine)
                         new_layers += combine
                     print('new_layers.....', new_layers)
                     out_layer_new = new_layers.filtered(
                         lambda x: (
-                                          x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                                          x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[0].real_date)
                     print('before........', out_layers)
                     out_layers = out_layer_new

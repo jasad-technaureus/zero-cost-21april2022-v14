@@ -14,7 +14,7 @@ from odoo.tools import float_is_zero
 class StockPicking(models.Model):
     _inherit = 'stock.picking'
 
-    real_date = fields.Datetime(string="Real Date")
+    real_date = fields.Datetime(string="Real date")
     real_date_display = fields.Datetime(string="Real Date")
     account_move_id = fields.Many2one('account.move', string="Account Move")
     # date_done_display = fields.Datetime('Date of Transfer', copy=False, readonly=True,
