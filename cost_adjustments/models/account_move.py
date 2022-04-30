@@ -24,7 +24,7 @@ class AccountMove(models.Model):
                     if picking_ids:
                         for line in self.line_ids:
                             move = picking_ids[0].move_lines.filtered(
-                                lambda x: x.purchase_line_id == line.purchase_line_id)
+                                lambda x: x.purchase_line_id == line.purchase_line_id and x.state == 'done')
                             if move:
                                 valuation_layer = self.env['stock.valuation.layer'].search(
                                     [('stock_move_id', '=', move.id)])
@@ -77,12 +77,13 @@ class AccountMove(models.Model):
                                             valuation_layer = self.env['stock.valuation.layer'].search(
                                                 [('stock_move_id', '=', move.id)])
                                             print('line.....', line.debit)
-                                            print('-----', valuation_layer.unit_cost, valuation_layer.invoiced_unit_price)
+                                            print('-----', valuation_layer.unit_cost,
+                                                  valuation_layer.invoiced_unit_price)
                                             if valuation_layer.unit_cost != valuation_layer.invoiced_unit_price:
                                                 unit_price = line.debit / line.quantity
                                                 value = unit_price * move.product_uom_qty
                                                 valuation_layer.value = value
-                                                print('ssssssssssss', value,move.product_uom_qty,unit_price)
+                                                print('ssssssssssss', value, move.product_uom_qty, unit_price)
                                                 valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
                                                 valuation_layer.account_move_id.button_draft()
                                                 credit_line = valuation_layer.account_move_id.line_ids.filtered(

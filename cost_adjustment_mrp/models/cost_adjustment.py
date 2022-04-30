@@ -427,9 +427,9 @@ class CostAdjustments(models.Model):
                 print('before........', out_layers)
                 out_layers = out_layer_new
                 print('after-sort', out_layer_new)
-            f_layer = valuation_layers.filtered(lambda x: x.cost_adjustment_id == cost_adjustment)
-            if not f_layer:
-                out_layers -= out_layers
+            # f_layer = valuation_layers.filtered(lambda x: x.cost_adjustment_id == cost_adjustment)
+            # if not f_layer:
+            #     out_layers -= out_layers
             print('out_layers.......', out_layers)
             if out_layers:
                 for layer in out_layers:
@@ -618,10 +618,7 @@ class CostAdjustments(models.Model):
                                     debit_line.with_context(check_move_validity=False).debit = abs(layer.value)
                                     print('LINE-m', credit_line.credit, debit_line.debit)
                                     fgs.stock_valuation_layer_ids.account_move_id.action_post()
-                        # else:
-                        #     invoice_line=svl.move_id.line_ids.filtered(lambda x:x.purchase_line_id==svl.stock_move_id.purchase_line_id)
-                        #     print('invoice_line',invoice_line,invoice_line.debit)
-                        #     sailus
+
 
 
                 else:
@@ -674,8 +671,7 @@ class CostAdjustments(models.Model):
                         unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
                             layers.mapped('quantity')) != 0 else 0
                         print('unit_cost2', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
-                        # if layer[3]:
-                        #     print('check',layer[3])
+
                         layer.unit_cost = unit_cost
                         actual_value = unit_cost * layer.quantity
                         layer.value = actual_value
@@ -743,25 +739,14 @@ class CostAdjustWarning(models.TransientModel):
                     key=lambda x: x.real_date)
 
                 real_dates = valuation_layers_all.mapped('real_date')
-                # real_date_new = []
-                # date_to_change = {}
-                # for layer in valuation_layers_all:
-                #     time = datetime.strptime(str(layer.real_date), "%Y-%m-%d %H:%M:%S")
-                #     print('time......', time, time.hour, time.min, time.second)
-                #     if time.hour == 18 and time.minute == 30 and time.second == 00:
-                #         date_to_change[layer] = layer.real_date
-                #         layer.real_date += timedelta(days=1)
-                #         print('date.....inc', layer.real_date)
-                #     real_date_new.append(layer.real_date)
-                # real_dates = real_date_new
+
                 real_dates = list(set([r.date() for r in real_dates]))
                 real_dates.sort(key=lambda x: x)
                 real_date_dict = {}
                 for real_date in real_dates:
                     real_date_dict[real_date] = valuation_layers_all.filtered(lambda x: x.real_date.date() == real_date)
                 print('real_date_dict11', real_date_dict)
-                # for layer_to_change in date_to_change:
-                #     layer_to_change.real_date = date_to_change[layer_to_change]
+
                 for date in real_date_dict:
                     in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                     print('in_layer--', in_layer)
@@ -781,9 +766,9 @@ class CostAdjustWarning(models.TransientModel):
                 out_layers = out_layer_new
                 print('after-sort', out_layer_new)
 
-            f_layer = valuation_layers.filtered(lambda x: x.cost_adjustment_id == cost_adjustment)
-            if not f_layer:
-                out_layers -= out_layers
+            # f_layer = valuation_layers.filtered(lambda x: x.cost_adjustment_id == cost_adjustment)
+            # if not f_layer:
+            #     out_layers -= out_layers
             print('OUT_LAYER_LAST....', out_layers)
             if out_layers:
                 for layer in out_layers:
@@ -795,10 +780,7 @@ class CostAdjustWarning(models.TransientModel):
                         else:
                             break
                     print('layers....', layers)
-                    # layers = valuation_layers_all.filtered(
-                    #     lambda
-                    #         x: x.real_date <= layer.real_date)  ###new_change( and x.value > 0) 14/03/2022
-                    # layers = layers - layer
+
                     return_svl = layers.filtered(
                         lambda x: x.stock_move_id.origin_returned_move_id == layer.stock_move_id)
                     if return_svl:
@@ -857,63 +839,62 @@ class CostAdjustWarning(models.TransientModel):
                                 lambda x: x.debit > 0)
                             debit_line.with_context(check_move_validity=False).debit = abs(layer.value)
                             fgs.stock_valuation_layer_ids.account_move_id.action_post()
-                in_svl = valuation_layers_all.filtered(lambda
-                                                           x: x.value > 0 and x.blank_type != 'Adjustment' and x.order_type == 'purchase' and x.margin != 0 and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
-                if in_svl:
-                    for svl in in_svl:
-                        if not svl.account_move_id.has_reconciled_entries:
-                            svl.unit_cost = svl.invoiced_unit_price
-                            svl.value = svl.invoiced_amount
-                            print('svl.unit_cost', svl.unit_cost, svl.value)
-                            svl.account_move_id.button_draft()
-                            credit_line = svl.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
-                            credit_line.with_context(check_move_validity=False).credit = abs(svl.value)
-                            debit_line = svl.account_move_id.line_ids.filtered(lambda x: x.debit > 0)
-                            debit_line.with_context(check_move_validity=False).debit = abs(svl.value)
-                            svl.account_move_id.action_post()
-                            out_layers = valuation_layers_all.filtered(
-                                lambda x: (
-                                                  x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
-                                          svl.real_date).sorted(
-                                key=lambda x: x.real_date)
-                            for layer in out_layers:
-                                layers = valuation_layers_all.filtered(
-                                    lambda x: x.real_date <= layer.real_date)
-                                layers = layers - layer
-                                if not layers:
-                                    raise UserError(
-                                        _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
-                                unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
-                                    layers.mapped('quantity')) != 0 else 0
-                                if unit_cost == 0:
-                                    continue
-                                # if layer[3]:
-                                #     print('check',layer[3])
-                                layer.unit_cost = unit_cost
-                                actual_value = unit_cost * layer.quantity
-                                layer.value = actual_value
-                                print('LAYER2', layer.value)
-                                layer.account_move_id.button_draft()
-                                credit_line = layer.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
-                                credit_line.with_context(check_move_validity=False).credit = abs(actual_value)
-                                debit_line = layer.account_move_id.line_ids.filtered(lambda x: x.debit > 0)
-                                debit_line.with_context(check_move_validity=False).debit = abs(actual_value)
-                                print('LINE2', credit_line.credit, debit_line.debit)
-                                layer.account_move_id.action_post()
-                                if layer.stock_move_id.raw_material_production_id:
-                                    print('FINSI', layer.stock_move_id.raw_material_production_id.move_finished_ids)
-                                    for fgs in layer.stock_move_id.raw_material_production_id.move_finished_ids:
-                                        fgs.stock_valuation_layer_ids.value = abs(layer.value)
-                                        fgs.stock_valuation_layer_ids.unit_cost = abs(
-                                            layer.value) / fgs.stock_valuation_layer_ids.quantity
-                                        fgs.stock_valuation_layer_ids.account_move_id.button_draft()
-                                        credit_line = fgs.stock_valuation_layer_ids.account_move_id.line_ids.filtered(
-                                            lambda x: x.credit > 0)
-                                        credit_line.with_context(check_move_validity=False).credit = abs(layer.value)
-                                        debit_line = fgs.stock_valuation_layer_ids.account_move_id.line_ids.filtered(
-                                            lambda x: x.debit > 0)
-                                        debit_line.with_context(check_move_validity=False).debit = abs(layer.value)
-                                        fgs.stock_valuation_layer_ids.account_move_id.action_post()
+                # in_svl = valuation_layers_all.filtered(lambda
+                #                                            x: x.value > 0 and x.blank_type != 'Adjustment' and x.order_type == 'purchase' and x.margin != 0 and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
+                # if in_svl:
+                #     for svl in in_svl:
+                #         if not svl.account_move_id.has_reconciled_entries:
+                #             svl.unit_cost = svl.invoiced_unit_price
+                #             svl.value = svl.invoiced_amount
+                #             print('svl.unit_cost', svl.unit_cost, svl.value)
+                #             svl.account_move_id.button_draft()
+                #             credit_line = svl.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
+                #             credit_line.with_context(check_move_validity=False).credit = abs(svl.value)
+                #             debit_line = svl.account_move_id.line_ids.filtered(lambda x: x.debit > 0)
+                #             debit_line.with_context(check_move_validity=False).debit = abs(svl.value)
+                #             svl.account_move_id.action_post()
+                #             out_layers = valuation_layers_all.filtered(
+                #                 lambda x: (
+                #                                   x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                #                           svl.real_date).sorted(
+                #                 key=lambda x: x.real_date)
+                #             for layer in out_layers:
+                #                 layers = valuation_layers_all.filtered(
+                #                     lambda x: x.real_date <= layer.real_date)
+                #                 layers = layers - layer
+                #                 if not layers:
+                #                     raise UserError(
+                #                         _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
+                #                 unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                #                     layers.mapped('quantity')) != 0 else 0
+                #                 if unit_cost == 0:
+                #                     continue
+                #
+                #                 layer.unit_cost = unit_cost
+                #                 actual_value = unit_cost * layer.quantity
+                #                 layer.value = actual_value
+                #                 print('LAYER2', layer.value)
+                #                 layer.account_move_id.button_draft()
+                #                 credit_line = layer.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
+                #                 credit_line.with_context(check_move_validity=False).credit = abs(actual_value)
+                #                 debit_line = layer.account_move_id.line_ids.filtered(lambda x: x.debit > 0)
+                #                 debit_line.with_context(check_move_validity=False).debit = abs(actual_value)
+                #                 print('LINE2', credit_line.credit, debit_line.debit)
+                #                 layer.account_move_id.action_post()
+                #                 if layer.stock_move_id.raw_material_production_id:
+                #                     print('FINSI', layer.stock_move_id.raw_material_production_id.move_finished_ids)
+                #                     for fgs in layer.stock_move_id.raw_material_production_id.move_finished_ids:
+                #                         fgs.stock_valuation_layer_ids.value = abs(layer.value)
+                #                         fgs.stock_valuation_layer_ids.unit_cost = abs(
+                #                             layer.value) / fgs.stock_valuation_layer_ids.quantity
+                #                         fgs.stock_valuation_layer_ids.account_move_id.button_draft()
+                #                         credit_line = fgs.stock_valuation_layer_ids.account_move_id.line_ids.filtered(
+                #                             lambda x: x.credit > 0)
+                #                         credit_line.with_context(check_move_validity=False).credit = abs(layer.value)
+                #                         debit_line = fgs.stock_valuation_layer_ids.account_move_id.line_ids.filtered(
+                #                             lambda x: x.debit > 0)
+                #                         debit_line.with_context(check_move_validity=False).debit = abs(layer.value)
+                #                         fgs.stock_valuation_layer_ids.account_move_id.action_post()
 
 
             else:
@@ -944,8 +925,7 @@ class CostAdjustWarning(models.TransientModel):
                                         _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
                                 unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
                                     layers.mapped('quantity')) != 0 else 0
-                                # if layer[3]:
-                                #     print('check',layer[3])
+
                                 layer.unit_cost = unit_cost
                                 actual_value = unit_cost * layer.quantity
                                 layer.value = actual_value
@@ -1037,8 +1017,7 @@ class CostAdjustWarning(models.TransientModel):
                             layers.mapped('quantity')) != 0 else 0
                         print('unit_cost....2', layer, unit_cost, sum(layers.mapped('value')),
                               sum(layers.mapped('quantity')))
-                        # if layer[3]:
-                        #     print('check',layer[3])
+
                         layer.unit_cost = unit_cost
                         actual_value = unit_cost * layer.quantity
                         layer.value = actual_value
@@ -1082,8 +1061,7 @@ class CostAdjustWarning(models.TransientModel):
             total_quantity = sum(valuation_layers_all.mapped('quantity'))
             value1 = sum(valuation_layers_all.mapped('value'))
             print('value1', value1)
-            # for l in valuation_layers_all:
-            #     print('value-last', l, l.value)
+
             cost_adjustment.product_id.with_context(
                 cost_adjustment=True).standard_price = value1 / total_quantity if total_quantity != 0 else 0
 
@@ -1142,25 +1120,14 @@ class CostAdjustWizard(models.TransientModel):
                     key=lambda x: x.real_date)
 
                 real_dates = valuation_layers_all.mapped('real_date')
-                # real_date_new = []
-                # date_to_change = {}
-                # for layer in valuation_layers_all:
-                #     time = datetime.strptime(str(layer.real_date), "%Y-%m-%d %H:%M:%S")
-                #     print('time......', time, time.hour, time.min, time.second)
-                #     if time.hour == 18 and time.minute == 30 and time.second == 00:
-                #         date_to_change[layer] = layer.real_date
-                #         layer.real_date += timedelta(days=1)
-                #         print('date.....inc', layer.real_date)
-                #     real_date_new.append(layer.real_date)
-                # real_dates = real_date_new
+
                 real_dates = list(set([r.date() for r in real_dates]))
                 real_dates.sort(key=lambda x: x)
                 real_date_dict = {}
                 for real_date in real_dates:
                     real_date_dict[real_date] = valuation_layers_all.filtered(lambda x: x.real_date.date() == real_date)
                 print('real_date_dict', real_date_dict)
-                # for layer_to_change in date_to_change:
-                #     layer_to_change.real_date = date_to_change[layer_to_change]
+
                 for date in real_date_dict:
                     in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
                     print('in_layer--', in_layer)
