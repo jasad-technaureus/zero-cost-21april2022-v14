@@ -23,28 +23,30 @@ class AccountMove(models.Model):
                     picking_ids = picking_ids.filtered(lambda x: x.state == 'done')
                     if picking_ids:
                         for line in self.line_ids:
-                            move = picking_ids[0].move_lines.filtered(
-                                lambda x: x.purchase_line_id == line.purchase_line_id and x.state == 'done')
-                            if move:
-                                valuation_layer = self.env['stock.valuation.layer'].search(
-                                    [('stock_move_id', '=', move.id)])
-                                print('unitcost...........', line.price_unit)
-                                if valuation_layer.unit_cost != line.price_unit:
-                                    valuation_layer.unit_cost = line.price_unit
-                                    valuation_layer.value = valuation_layer.unit_cost * valuation_layer.quantity
-                                    # valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
-                                    valuation_layer.account_move_id.button_draft()
-                                    valuation_layer.account_move_id.button_draft()
-                                    credit_line = valuation_layer.account_move_id.line_ids.filtered(
-                                        lambda x: x.credit > 0)
-                                    credit_line.with_context(check_move_validity=False).credit = abs(
-                                        valuation_layer.value)
-                                    debit_line = valuation_layer.account_move_id.line_ids.filtered(
-                                        lambda x: x.debit > 0)
-                                    debit_line.with_context(check_move_validity=False).debit = abs(
-                                        valuation_layer.value)
-                                    valuation_layer.account_move_id.action_post()
-                                    print('UNITCOST...', valuation_layer.unit_cost)
+                            for picking in picking_ids:
+                                move = picking.move_lines.filtered(
+                                    lambda x: x.purchase_line_id == line.purchase_line_id)
+                                move = move.filtered(lambda x: x.state == 'done')
+                                if move:
+                                    valuation_layer = self.env['stock.valuation.layer'].search(
+                                        [('stock_move_id', '=', move.id)])
+                                    print('unitcost...........', line.price_unit)
+                                    if valuation_layer.unit_cost != line.price_unit:
+                                        valuation_layer.unit_cost = line.price_unit
+                                        valuation_layer.value = valuation_layer.unit_cost * valuation_layer.quantity
+                                        # valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
+                                        valuation_layer.account_move_id.button_draft()
+                                        valuation_layer.account_move_id.button_draft()
+                                        credit_line = valuation_layer.account_move_id.line_ids.filtered(
+                                            lambda x: x.credit > 0)
+                                        credit_line.with_context(check_move_validity=False).credit = abs(
+                                            valuation_layer.value)
+                                        debit_line = valuation_layer.account_move_id.line_ids.filtered(
+                                            lambda x: x.debit > 0)
+                                        debit_line.with_context(check_move_validity=False).debit = abs(
+                                            valuation_layer.value)
+                                        valuation_layer.account_move_id.action_post()
+                                        print('UNITCOST...', valuation_layer.unit_cost)
                 # if not products:
                 #     cost_adjustment = self.env['cost.adjustments'].create({'product_id': line.product_id.id,
                 #                                                            'is_from_bll': True})
