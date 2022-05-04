@@ -101,7 +101,11 @@ class CostAdjustments(models.Model):
 
                                 user_error_case = True
                                 break
-
+                        landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                            lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                        if landed_cost_revaluation_svl:
+                            layers += landed_cost_revaluation_svl
                         unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
                             layers.mapped('quantity')) != 0 else 0
                         print('unit_cost', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
@@ -445,6 +449,11 @@ class CostAdjustments(models.Model):
                         else:
                             break
                     print('layers....to_consider', layers)
+                    landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                    print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                    if landed_cost_revaluation_svl:
+                        layers += landed_cost_revaluation_svl
                     if not layers:
                         if layer.stock_move_id.inventory_id and layer.value > 0:
                             continue
@@ -669,6 +678,11 @@ class CostAdjustments(models.Model):
                                 layers += l
                             else:
                                 break
+                        landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                            lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                        if landed_cost_revaluation_svl:
+                            layers += landed_cost_revaluation_svl
                         if not layers:
                             raise UserError(
                                 _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
@@ -792,6 +806,11 @@ class CostAdjustWarning(models.TransientModel):
                     if return_svl:
                         layers = layers - return_svl
                     print('layers....1', layers)
+                    landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                    print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                    if landed_cost_revaluation_svl:
+                        layers += landed_cost_revaluation_svl
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
@@ -926,6 +945,11 @@ class CostAdjustWarning(models.TransientModel):
                                 layers = valuation_layers_all.filtered(
                                     lambda x: x.real_date <= layer.real_date)
                                 layers = layers - layer
+                                landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                                    lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                                print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                                if landed_cost_revaluation_svl:
+                                    layers += landed_cost_revaluation_svl
                                 if not layers:
                                     raise UserError(
                                         _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
@@ -1002,6 +1026,11 @@ class CostAdjustWarning(models.TransientModel):
                                 layers += l
                             else:
                                 break
+                        landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                            lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                        if landed_cost_revaluation_svl:
+                            layers += landed_cost_revaluation_svl
                         if return_layer:
                             for rl in return_layer:
                                 return_svl = self.env['stock.valuation.layer'].search(
@@ -1178,6 +1207,11 @@ class CostAdjustWizard(models.TransientModel):
                     if return_svl:
                         layers = layers - return_svl
                     print('layers....1', layers)
+                    landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                    print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                    if landed_cost_revaluation_svl:
+                        layers += landed_cost_revaluation_svl
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
@@ -1403,6 +1437,11 @@ class CostAdjustWizard(models.TransientModel):
                                 debit_line = rl.account_move_id.line_ids.filtered(lambda x: x.debit > 0)
                                 debit_line.with_context(check_move_validity=False).debit = abs(rl.value)
                         print('layers....to_consider', layers)
+                        landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                            lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                        if landed_cost_revaluation_svl:
+                            layers += landed_cost_revaluation_svl
                         if not layers:
                             raise UserError(
                                 _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))

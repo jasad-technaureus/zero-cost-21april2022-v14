@@ -200,6 +200,11 @@ class CostAdjustments(models.Model):
 
                                 user_error_case = True
                                 break
+                        landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                            lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                        if landed_cost_revaluation_svl:
+                            layers += landed_cost_revaluation_svl
 
                         unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
                             layers.mapped('quantity')) != 0 else 0
@@ -439,7 +444,8 @@ class CostAdjustments(models.Model):
                 real_dates.sort(key=lambda x: x)
                 real_date_dict = {}
                 for real_date in real_dates:
-                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(lambda x: x.real_date.date() == real_date)
+                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(
+                        lambda x: x.real_date.date() == real_date)
                 print('real_date_dict', real_date_dict)
 
                 for date in real_date_dict:
@@ -474,6 +480,11 @@ class CostAdjustments(models.Model):
                         else:
                             break
                     print('layers....to_consider', layers)
+                    landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                    print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                    if landed_cost_revaluation_svl:
+                        layers += landed_cost_revaluation_svl
                     if not layers:
                         if layer.stock_move_id.inventory_id and layer.value > 0:
                             continue
@@ -644,6 +655,11 @@ class CostAdjustments(models.Model):
                                 layers += l
                             else:
                                 break
+                        landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                            lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                        if landed_cost_revaluation_svl:
+                            layers += landed_cost_revaluation_svl
                         if not layers:
                             raise UserError(
                                 _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
@@ -722,7 +738,8 @@ class CostAdjustWarning(models.TransientModel):
                 real_dates.sort(key=lambda x: x)
                 real_date_dict = {}
                 for real_date in real_dates:
-                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(lambda x: x.real_date.date() == real_date)
+                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(
+                        lambda x: x.real_date.date() == real_date)
                 print('real_date_dict11', real_date_dict)
 
                 # for layer_to_change in date_to_change:
@@ -768,6 +785,11 @@ class CostAdjustWarning(models.TransientModel):
                     if return_svl:
                         layers = layers - return_svl
                     print('layers....1', layers)
+                    landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                    print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                    if landed_cost_revaluation_svl:
+                        layers += landed_cost_revaluation_svl
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
@@ -1029,7 +1051,8 @@ class CostAdjustWizard(models.TransientModel):
                 real_dates.sort(key=lambda x: x)
                 real_date_dict = {}
                 for real_date in real_dates:
-                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(lambda x: x.real_date.date() == real_date)
+                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(
+                        lambda x: x.real_date.date() == real_date)
                 print('real_date_dict', real_date_dict)
                 for date in real_date_dict:
                     in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
@@ -1072,6 +1095,11 @@ class CostAdjustWizard(models.TransientModel):
                     if return_svl:
                         layers = layers - return_svl
                     print('layers....1', layers)
+                    landed_cost_revaluation_svl = valuation_layers_all.filtered(
+                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                    print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                    if landed_cost_revaluation_svl:
+                        layers += landed_cost_revaluation_svl
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
