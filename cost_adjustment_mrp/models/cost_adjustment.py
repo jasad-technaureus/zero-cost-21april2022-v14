@@ -58,7 +58,7 @@ class CostAdjustments(models.Model):
                     real_dates.sort(key=lambda x: x)
                     real_date_dict = {}
                     for real_date in real_dates:
-                        real_date_dict[real_date] = valuation_layers_all.filtered(
+                        real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(
                             lambda x: x.real_date.date() == real_date)
                     print('real_date_dict', real_date_dict)
                     # for layer_to_change in date_to_change:
@@ -292,7 +292,7 @@ class CostAdjustments(models.Model):
                         real_dates.sort(key=lambda x: x)
                         real_date_dict = {}
                         for real_date in real_dates:
-                            real_date_dict[real_date] = valuation_layers_all.filtered(
+                            real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(
                                 lambda x: x.real_date.date() == real_date)
                         print('real_date_dict', real_date_dict)
 
@@ -409,7 +409,7 @@ class CostAdjustments(models.Model):
                 real_dates.sort(key=lambda x: x)
                 real_date_dict = {}
                 for real_date in real_dates:
-                    real_date_dict[real_date] = valuation_layers_all.filtered(lambda x: x.real_date.date() == real_date)
+                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(lambda x: x.real_date.date() == real_date)
                 print('real_date_dict', real_date_dict)
                 # for layer_to_change in date_to_change:
                 #     layer_to_change.real_date = date_to_change[layer_to_change]
@@ -638,7 +638,7 @@ class CostAdjustments(models.Model):
                     real_dates.sort(key=lambda x: x)
                     real_date_dict = {}
                     for real_date in real_dates:
-                        real_date_dict[real_date] = valuation_layers_all.filtered(
+                        real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(
                             lambda x: x.real_date.date() == real_date)
                     print('real_date_dict', real_date_dict)
 
@@ -750,7 +750,7 @@ class CostAdjustWarning(models.TransientModel):
                 real_dates.sort(key=lambda x: x)
                 real_date_dict = {}
                 for real_date in real_dates:
-                    real_date_dict[real_date] = valuation_layers_all.filtered(lambda x: x.real_date.date() == real_date)
+                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(lambda x: x.real_date.date() == real_date)
                 print('real_date_dict11', real_date_dict)
 
                 for date in real_date_dict:
@@ -970,7 +970,7 @@ class CostAdjustWarning(models.TransientModel):
                     real_dates.sort(key=lambda x: x)
                     real_date_dict = {}
                     for real_date in real_dates:
-                        real_date_dict[real_date] = valuation_layers_all.filtered(
+                        real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(
                             lambda x: x.real_date.date() == real_date)
                     print('real_date_dict22', real_date_dict)
                     for date in real_date_dict:
@@ -1134,7 +1134,7 @@ class CostAdjustWizard(models.TransientModel):
                 real_dates.sort(key=lambda x: x)
                 real_date_dict = {}
                 for real_date in real_dates:
-                    real_date_dict[real_date] = valuation_layers_all.filtered(lambda x: x.real_date.date() == real_date)
+                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(lambda x: x.real_date.date() == real_date)
                 print('real_date_dict', real_date_dict)
 
                 for date in real_date_dict:
@@ -1358,7 +1358,7 @@ class CostAdjustWizard(models.TransientModel):
                     real_dates.sort(key=lambda x: x)
                     real_date_dict = {}
                     for real_date in real_dates:
-                        real_date_dict[real_date] = valuation_layers_all.filtered(
+                        real_date_dict[real_date] = real_date_dict[real_date].filtered(
                             lambda x: x.real_date.date() == real_date)
                     print('real_date_dict22', real_date_dict)
 

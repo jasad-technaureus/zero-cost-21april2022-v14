@@ -4,7 +4,7 @@
 
 {
     'name': 'Cost Adjustments',
-    'version': '14.0.3.7',
+    'version': '14.0.3.8',
     'category': 'Accounting',
     'sequence': 1,
     'summary': 'Cost Adjustments',
