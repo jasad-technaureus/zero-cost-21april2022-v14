@@ -23,7 +23,9 @@ class CostAdjustments(models.Model):
                 valuation_layers_all = self.env['stock.valuation.layer'].search(
                     [('product_id', '=', cost_adjustment.product_id.id), ('state', '=', 'confirm')])
                 print('valuation_layers_all', valuation_layers_all)
-
+                valuation_layer_to_be_sorted = valuation_layers_all.filtered(
+                    lambda
+                        x: x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
                 valuation_layers_all._compute_move_type()  # to_calculate_margin
 
                 valuation_layers = valuation_layers_all.filtered(
@@ -40,7 +42,7 @@ class CostAdjustments(models.Model):
                                           x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
                                   first_layer[0].real_date).sorted(
                         key=lambda x: x.real_date)
-                    real_dates = valuation_layers_all.mapped('real_date')
+                    real_dates = valuation_layer_to_be_sorted.mapped('real_date')
                     # real_date_new = []
                     # date_to_change = {}
                     # for layer in valuation_layers_all:
@@ -285,7 +287,7 @@ class CostAdjustments(models.Model):
                                       first_layer[
                                           0].real_date).sorted(
                             key=lambda x: x.real_date)
-                        real_dates = valuation_layers_all.mapped('real_date')
+                        real_dates = valuation_layer_to_be_sorted.mapped('real_date')
                         real_dates = list(set([r.date() for r in real_dates]))
                         real_dates.sort(key=lambda x: x)
                         real_date_dict = {}
@@ -373,7 +375,9 @@ class CostAdjustments(models.Model):
 
             valuation_layers_all._compute_move_type()  # to_calculate_margin
             print("valuation_layers_all________", valuation_layers_all)
-
+            valuation_layer_to_be_sorted = valuation_layers_all.filtered(
+                lambda
+                    x: x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
             valuation_layers = valuation_layers_all.filtered(
                 lambda
                     x: x.product_id == cost_adjustment.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
@@ -389,7 +393,7 @@ class CostAdjustments(models.Model):
                               first_layer[0].real_date).sorted(
                     key=lambda x: x.real_date)
                 print('kkkkk', out_layers)
-                real_dates = valuation_layers_all.mapped('real_date')
+                real_dates = valuation_layer_to_be_sorted.mapped('real_date')
                 # real_date_new = []
                 # date_to_change = {}
                 # for layer in valuation_layers_all:
@@ -629,7 +633,7 @@ class CostAdjustments(models.Model):
                                   first_layer[
                                       0].real_date).sorted(
                         key=lambda x: x.real_date)
-                    real_dates = valuation_layers_all.mapped('real_date')
+                    real_dates = valuation_layer_to_be_sorted.mapped('real_date')
                     real_dates = list(set([r.date() for r in real_dates]))
                     real_dates.sort(key=lambda x: x)
                     real_date_dict = {}
@@ -721,7 +725,9 @@ class CostAdjustWarning(models.TransientModel):
                 [('product_id', '=', cost_adjustment.product_id.id), ('state', '=', 'confirm')]).sorted(
                 key=lambda x: x.real_date)
             print('valuation_layers_all', valuation_layers_all)
-
+            valuation_layer_to_be_sorted = valuation_layers_all.filtered(
+                lambda
+                    x: x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
             valuation_layers = valuation_layers_all.filtered(
                 lambda
                     x: x.product_id == cost_adjustment.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
@@ -738,7 +744,7 @@ class CostAdjustWarning(models.TransientModel):
                               first_layer[0].real_date).sorted(
                     key=lambda x: x.real_date)
 
-                real_dates = valuation_layers_all.mapped('real_date')
+                real_dates = valuation_layer_to_be_sorted.mapped('real_date')
 
                 real_dates = list(set([r.date() for r in real_dates]))
                 real_dates.sort(key=lambda x: x)
@@ -959,7 +965,7 @@ class CostAdjustWarning(models.TransientModel):
                                   first_layer[
                                       0].real_date).sorted(
                         key=lambda x: x.real_date)
-                    real_dates = valuation_layers_all.mapped('real_date')
+                    real_dates = valuation_layer_to_be_sorted.mapped('real_date')
                     real_dates = list(set([r.date() for r in real_dates]))
                     real_dates.sort(key=lambda x: x)
                     real_date_dict = {}
@@ -1093,6 +1099,9 @@ class CostAdjustWizard(models.TransientModel):
                 key=lambda x: x.real_date)
             all_layer = valuation_layers_all
             print('valuation_layers_all', valuation_layers_all)
+            valuation_layer_to_be_sorted = valuation_layers_all.filtered(
+                lambda
+                    x: x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
             if to_date:
                 valuation_layers_all = valuation_layers_all.filtered(
                     lambda x: x.real_date.date() <= to_date)
@@ -1119,7 +1128,7 @@ class CostAdjustWizard(models.TransientModel):
                               first_layer[0].real_date).sorted(
                     key=lambda x: x.real_date)
 
-                real_dates = valuation_layers_all.mapped('real_date')
+                real_dates = valuation_layer_to_be_sorted.mapped('real_date')
 
                 real_dates = list(set([r.date() for r in real_dates]))
                 real_dates.sort(key=lambda x: x)
@@ -1344,7 +1353,7 @@ class CostAdjustWizard(models.TransientModel):
                                   first_layer[
                                       0].real_date).sorted(
                         key=lambda x: x.real_date)
-                    real_dates = valuation_layers_all.mapped('real_date')
+                    real_dates = valuation_layer_to_be_sorted.mapped('real_date')
                     real_dates = list(set([r.date() for r in real_dates]))
                     real_dates.sort(key=lambda x: x)
                     real_date_dict = {}
