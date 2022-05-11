@@ -30,10 +30,12 @@ class CostAdjustments(models.Model):
                  ('state', '=', 'confirm')])
             valuation_layers = valuation_layers_all.filtered(
                 lambda
-                    x: x.product_id == val.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Revaluation')
-            print('valuation_layers', valuation_layers)
+                    x: x.product_id == val.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Revaluation' and (
+                        x.is_manual_receipt or x.value < 0))
+            print('DATA......', valuation_layers)
             valuation_layers_all._compute_move_type()
             first_layers = valuation_layers.sorted(key=lambda x: x.real_date)
+            print('first_layers', first_layers)
             if valuation_layers and first_layers and first_layers[0].cost_adjustment_id != val:
                 first_layer = first_layers.filtered(lambda x: x.cost_adjustment_id == val)
                 if not first_layer:
@@ -68,26 +70,27 @@ class CostAdjustments(models.Model):
 
                 count += len(stock_out_after_real)
                 print('count--', count)
-                purchase_layers = self.env['stock.valuation.layer'].search(
-                    [('product_id', '=', val.product_id.id),
-                     ('order_type', '=', 'purchase'), ('margin', '!=', 0)])
-                if purchase_layers:
-                    count += len(purchase_layers)
+                # purchase_layers = self.env['stock.valuation.layer'].search(
+                #     [('product_id', '=', val.product_id.id),
+                #      ('order_type', '=', 'purchase'), ('margin', '!=', 0)])
+                # if purchase_layers:
+                #     count += len(purchase_layers)
 
                 val.count = count
                 print('----count', count, len(wrong_in_layer))
                 print(count)
-            else:
-                purchase_layers = self.env['stock.valuation.layer'].search(
-                    [('product_id', '=', val.product_id.id),
-                     ('order_type', '=', 'purchase'), ('margin', '!=', 0)])
-                first_layers = purchase_layers.sorted(key=lambda x: x.real_date)
-                if first_layers:
-                    val.from_date = first_layers[0].real_date
-                    val.count += len(purchase_layers)
-                else:
-                    val.from_date = False
-                    val.count = 0
+            # else:
+            #     purchase_layers = self.env['stock.valuation.layer'].search(
+            #         [('product_id', '=', val.product_id.id),
+            #          ('order_type', '=', 'purchase'), ('margin', '!=', 0)])
+            #     print()
+            #     first_layers = purchase_layers.sorted(key=lambda x: x.real_date)
+            #     if first_layers:
+            #         val.from_date = first_layers[0].real_date
+            #         val.count += len(purchase_layers)
+            #     else:
+            #         val.from_date = False
+            #         val.count = 0
 
             if val.count == 0:
                 valuation_layers = valuation_layers_all.filtered(
@@ -105,6 +108,10 @@ class CostAdjustments(models.Model):
             if val.count == 0:
                 val.from_date = False
                 val.active = False
+            if first_layers:
+                val.from_date = first_layer.real_date
+            else:
+                val.from_date = False
 
     def cost_adjustment(self):
         view = self.env.ref('cost_adjustments.adjust_cost_warning_wizard')
@@ -201,11 +208,12 @@ class CostAdjustments(models.Model):
                                 user_error_case = True
                                 break
                         landed_cost_revaluation_svl = valuation_layers_all.filtered(
-                            lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                            lambda
+                                x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (x.real_date <= layer.real_date))
                         print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                         if landed_cost_revaluation_svl:
                             layers += landed_cost_revaluation_svl
-
+                        print('LAYERS_FINAL..', layers)
                         unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
                             layers.mapped('quantity')) != 0 else 0
                         print('unit_cost', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
@@ -481,7 +489,8 @@ class CostAdjustments(models.Model):
                             break
                     print('layers....to_consider', layers)
                     landed_cost_revaluation_svl = valuation_layers_all.filtered(
-                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        lambda
+                            x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (x.real_date <= layer.real_date))
                     print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                     if landed_cost_revaluation_svl:
                         layers += landed_cost_revaluation_svl
@@ -656,7 +665,8 @@ class CostAdjustments(models.Model):
                             else:
                                 break
                         landed_cost_revaluation_svl = valuation_layers_all.filtered(
-                            lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                            lambda x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (
+                                        x.real_date <= layer.real_date))
                         print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                         if landed_cost_revaluation_svl:
                             layers += landed_cost_revaluation_svl
@@ -786,10 +796,13 @@ class CostAdjustWarning(models.TransientModel):
                         layers = layers - return_svl
                     print('layers....1', layers)
                     landed_cost_revaluation_svl = valuation_layers_all.filtered(
-                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        lambda
+                            x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (
+                                    x.real_date <= layer.real_date))
                     print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                     if landed_cost_revaluation_svl:
                         layers += landed_cost_revaluation_svl
+
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
@@ -810,6 +823,7 @@ class CostAdjustWarning(models.TransientModel):
                         else:
                             raise UserError(
                                 _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
+                    print('LAYERS-FINAL....', layers)
                     unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
                         layers.mapped('quantity')) != 0 else 0
                     print('unit_cost111', layer, unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
@@ -1096,7 +1110,8 @@ class CostAdjustWizard(models.TransientModel):
                         layers = layers - return_svl
                     print('layers....1', layers)
                     landed_cost_revaluation_svl = valuation_layers_all.filtered(
-                        lambda x: x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation')
+                        lambda
+                            x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (x.real_date <= layer.real_date))
                     print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                     if landed_cost_revaluation_svl:
                         layers += landed_cost_revaluation_svl

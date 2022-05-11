@@ -12,7 +12,8 @@ class AccountMove(models.Model):
         res = super(AccountMove, self).action_post()
         purchase_id = None
         for line in self.invoice_line_ids:
-            purchase_id = line.purchase_line_id.order_id
+            if not purchase_id:
+                purchase_id = line.purchase_line_id.order_id
             purchase_line = line.purchase_line_id.order_id.order_line.filtered(lambda x: x == line.purchase_line_id)
 
             if purchase_line and purchase_line.price_unit != line.price_unit and purchase_id.currency_id == self.currency_id:
@@ -29,7 +30,7 @@ class AccountMove(models.Model):
                                 move = move.filtered(lambda x: x.state == 'done')
                                 if move:
                                     valuation_layer = self.env['stock.valuation.layer'].search(
-                                        [('stock_move_id', '=', move.id)])
+                                        [('stock_move_id', '=', move.id),('state', '=', 'confirm')])
                                     print('unitcost...........', line.price_unit)
                                     if valuation_layer.unit_cost != line.price_unit:
                                         valuation_layer.unit_cost = line.price_unit
@@ -77,7 +78,7 @@ class AccountMove(models.Model):
                                         print('move.......')
                                         if move:
                                             valuation_layer = self.env['stock.valuation.layer'].search(
-                                                [('stock_move_id', '=', move.id)])
+                                                [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
                                             print('line.....', line.debit)
                                             print('-----', valuation_layer.unit_cost,
                                                   valuation_layer.invoiced_unit_price)
@@ -135,7 +136,7 @@ class AccountMove(models.Model):
                                 move = move.filtered(lambda x: x.state == 'done')
                                 if move:
                                     valuation_layer = self.env['stock.valuation.layer'].search(
-                                        [('stock_move_id', '=', move.id)])
+                                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
                                     print('line.....fff', line.debit)
                                     valuation_layer.value = line.debit
                                     valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
@@ -171,7 +172,7 @@ class AccountMove(models.Model):
                         print('move...', move)
                         if move:
                             valuation_layer = self.env['stock.valuation.layer'].search(
-                                [('stock_move_id', '=', move.id)])
+                                [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
                             print('line.....', line.debit)
                             valuation_layer.value = line.debit
                             valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity if valuation_layer.quantity != 0 else 0
@@ -211,7 +212,8 @@ class AccountMove(models.Model):
                                 lambda x: x.purchase_line_id == line.purchase_line_id)
                         move = move.filtered(lambda x: x.state == 'done')
                         print('move', move, move.product_id.name, line.product_id.name)
-                        valuation_layer = self.env['stock.valuation.layer'].search([('stock_move_id', '=', move.id)])
+                        valuation_layer = self.env['stock.valuation.layer'].search(
+                            [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
                         print('valuation_layer',
                               valuation_layer)
                         valuation_layer.account_move_id.has_reconciled_entries = False
@@ -223,10 +225,23 @@ class AccountMove(models.Model):
                         print('to_reconicile', to_reconcile)
                         stj_line.reconciled = False
                         line.reconciled = False
-                        print('reconcile', stj_line, stj_line.reconciled)
                         reconcile = to_reconcile.reconcile()
                         stj_line.move_id.has_reconciled_entries = True
                         print('reconcile-final', reconcile)
+
+        # product_ids = self.invoice_line_ids.mapped('product_id').ids
+        # print('product_ids', product_ids)
+        # svls = self.env['stock.valuation.layer'].search([('product_id', 'in', product_ids)])
+        # print('svls',svls)
+        # for layer in svls:
+        for line in self.invoice_line_ids:
+            if line.product_id:
+                svls = self.env['stock.valuation.layer'].search([('product_id', '=', line.product_id.id)])
+                total_quantity = sum(svls.mapped('quantity'))
+                value = sum(svls.mapped('value'))
+                line.product_id.with_context(
+                    cost_adjustment=True).standard_price = value / total_quantity if total_quantity != 0 else 0
+
         return res
 
     def button_draft(self):

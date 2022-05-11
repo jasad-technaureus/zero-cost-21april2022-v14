@@ -4,7 +4,7 @@
 
 {
     'name': 'Cost Adjustment MRP',
-    'version': '14.0.1.3',
+    'version': '14.0.1.4',
     'category': 'Accounting',
     'sequence': 1,
     'summary': 'Cost Adjustments for MRP',
