@@ -814,7 +814,7 @@ class CostAdjustWarning(models.TransientModel):
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
-                                [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id)])
+                                [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                             print('initial', rl, rl.unit_cost, rl.value)
                             rl.unit_cost = return_svl.unit_cost
                             rl.value = return_svl.unit_cost * rl.quantity
@@ -837,7 +837,8 @@ class CostAdjustWarning(models.TransientModel):
                     if unit_cost == 0:
                         continue
                     if layer.stock_move_id.origin_returned_move_id:
-                        unit_cost = layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost
+                        r_layer=layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.filtered(lambda x:x.blank_type!='Landed Cost')
+                        unit_cost = r_layer.unit_cost
 
                     layer.unit_cost = unit_cost
                     actual_value = unit_cost * layer.quantity
@@ -1034,7 +1035,7 @@ class CostAdjustWarning(models.TransientModel):
                         if return_layer:
                             for rl in return_layer:
                                 return_svl = self.env['stock.valuation.layer'].search(
-                                    [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id)])
+                                    [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                                 print('initial', rl, rl.unit_cost, rl.value)
                                 rl.unit_cost = return_svl.unit_cost
                                 rl.value = return_svl.unit_cost * rl.quantity
@@ -1080,7 +1081,7 @@ class CostAdjustWarning(models.TransientModel):
             if return_layer:
                 for rl in return_layer:
                     return_svl = self.env['stock.valuation.layer'].search(
-                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id)])
+                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                     print('initial', rl, rl.unit_cost, rl.value)
                     rl.unit_cost = return_svl.unit_cost
                     rl.value = return_svl.unit_cost * rl.quantity
@@ -1215,7 +1216,7 @@ class CostAdjustWizard(models.TransientModel):
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
-                                [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id)])
+                                [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                             print('initial', rl, rl.unit_cost, rl.value)
                             rl.unit_cost = return_svl.unit_cost
                             rl.value = return_svl.unit_cost * rl.quantity
@@ -1425,7 +1426,7 @@ class CostAdjustWizard(models.TransientModel):
                         if return_layer:
                             for rl in return_layer:
                                 return_svl = self.env['stock.valuation.layer'].search(
-                                    [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id)])
+                                    [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                                 print('initial', rl, rl.unit_cost, rl.value)
                                 rl.unit_cost = return_svl.unit_cost
                                 rl.value = return_svl.unit_cost * rl.quantity
@@ -1475,7 +1476,7 @@ class CostAdjustWizard(models.TransientModel):
             if return_layer:
                 for rl in return_layer:
                     return_svl = self.env['stock.valuation.layer'].search(
-                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id)])
+                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                     print('initial', rl, rl.unit_cost, rl.value)
                     rl.unit_cost = return_svl.unit_cost
                     rl.value = return_svl.unit_cost * rl.quantity

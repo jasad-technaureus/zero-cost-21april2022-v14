@@ -30,7 +30,8 @@ class AccountMove(models.Model):
                                 move = move.filtered(lambda x: x.state == 'done')
                                 if move:
                                     valuation_layer = self.env['stock.valuation.layer'].search(
-                                        [('stock_move_id', '=', move.id),('state', '=', 'confirm')])
+                                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                         ('blank_type', '!=', 'Landed Cost')])
                                     print('unitcost...........', line.price_unit)
                                     if valuation_layer.unit_cost != line.price_unit:
                                         valuation_layer.unit_cost = line.price_unit
@@ -78,7 +79,8 @@ class AccountMove(models.Model):
                                         print('move.......')
                                         if move:
                                             valuation_layer = self.env['stock.valuation.layer'].search(
-                                                [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
+                                                [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                                 ('blank_type', '!=', 'Landed Cost')])
                                             print('line.....', line.debit)
                                             print('-----', valuation_layer.unit_cost,
                                                   valuation_layer.invoiced_unit_price)
@@ -136,7 +138,8 @@ class AccountMove(models.Model):
                                 move = move.filtered(lambda x: x.state == 'done')
                                 if move:
                                     valuation_layer = self.env['stock.valuation.layer'].search(
-                                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
+                                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                         ('blank_type', '!=', 'Landed Cost')])
                                     print('line.....fff', line.debit)
                                     valuation_layer.value = line.debit
                                     valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
@@ -172,7 +175,8 @@ class AccountMove(models.Model):
                         print('move...', move)
                         if move:
                             valuation_layer = self.env['stock.valuation.layer'].search(
-                                [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
+                                [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                 ('blank_type', '!=', 'Landed Cost')])
                             print('line.....', line.debit)
                             valuation_layer.value = line.debit
                             valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity if valuation_layer.quantity != 0 else 0
@@ -213,7 +217,8 @@ class AccountMove(models.Model):
                         move = move.filtered(lambda x: x.state == 'done')
                         print('move', move, move.product_id.name, line.product_id.name)
                         valuation_layer = self.env['stock.valuation.layer'].search(
-                            [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
+                            [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                             ('blank_type', '!=', 'Landed Cost')])
                         print('valuation_layer',
                               valuation_layer)
                         valuation_layer.account_move_id.has_reconciled_entries = False

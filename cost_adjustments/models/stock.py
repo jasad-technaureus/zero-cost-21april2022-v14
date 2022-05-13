@@ -179,17 +179,18 @@ class StockValuationLayer(models.Model):
             if svl.stock_move_id.origin_returned_move_id:
                 print('SVL-MAIN', svl)
                 return_svl = self.env['stock.valuation.layer'].search(
-                    [('stock_move_id', '=', svl.stock_move_id.origin_returned_move_id.id)])
+                    [('stock_move_id', '=', svl.stock_move_id.origin_returned_move_id.id),
+                     ('blank_type', '!=', 'Landed Cost')])
                 print('return_svl', return_svl)
-                unit_cost = sum(return_svl.mapped('value')) / sum(return_svl.mapped('quantity'))
-                print('unit_cost',unit_cost)
+                # unit_cost = sum(return_svl.mapped('value')) / sum(return_svl.mapped('quantity'))
+                # print('unit_cost',unit_cost)
                 products = self.env['cost.adjustments'].search(
                     [('product_id', '=', svl.product_id.id)])
                 if not products:
                     cost_adjustment = self.env['cost.adjustments'].create(
                         {'product_id': svl.product_id.id})
-                if svl.unit_cost != unit_cost:
-                    svl.unit_cost = unit_cost
+                if svl.unit_cost != return_svl.unit_cost:
+                    svl.unit_cost = return_svl.unit_cost
                     svl.value = svl.unit_cost * svl.quantity
                     valuation_layers_all = self.env['stock.valuation.layer'].search(
                         [('product_id', '=', svl.product_id.id), ('real_date', '!=', False),
@@ -670,7 +671,8 @@ class StockPicking(models.Model):
                                 lambda x: x.purchase_line_id == line.purchase_line_id)
                             if move:
                                 valuation_layer = self.env['stock.valuation.layer'].search(
-                                    [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
+                                    [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                     ('blank_type', '!=', 'Landed Cost')])
                                 print('line.....', line.debit)
                                 print('-----', valuation_layer.unit_cost, valuation_layer.invoiced_unit_price)
                                 if valuation_layer:
@@ -725,7 +727,8 @@ class StockPicking(models.Model):
                                 lambda x: x.purchase_line_id == line.purchase_line_id)
                             if move:
                                 valuation_layer = self.env['stock.valuation.layer'].search(
-                                    [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
+                                    [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                     ('blank_type', '!=', 'Landed Cost')])
                                 print('line.....fff', line.debit)
                                 valuation_layer.value = line.debit
                                 valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
@@ -748,7 +751,8 @@ class StockPicking(models.Model):
                     print('move...', move)
                     if move:
                         valuation_layer = self.env['stock.valuation.layer'].search(
-                            [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
+                            [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                             ('blank_type', '!=', 'Landed Cost')])
                         print('valuation_layer', valuation_layer)
                         print('line.....', line.debit)
                         if valuation_layer:
@@ -778,7 +782,8 @@ class StockPicking(models.Model):
                     move = self.move_lines.filtered(lambda x: x.purchase_line_id == line.purchase_line_id)
                     print('move', move, move.product_id.name, line.product_id.name)
                     valuation_layer = self.env['stock.valuation.layer'].search(
-                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm')])
+                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                         ('blank_type', '!=', 'Landed Cost')])
                     print('valuation_layer',
                           valuation_layer)
                     valuation_layer.account_move_id.has_reconciled_entries = False
