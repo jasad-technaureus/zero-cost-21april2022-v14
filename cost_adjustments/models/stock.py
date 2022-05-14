@@ -653,152 +653,157 @@ class StockPicking(models.Model):
 
     def button_validate(self):
         res = super(StockPicking, self).button_validate()
-        if self.purchase_id and self.purchase_id.invoice_ids:
-            bill = self.purchase_id.invoice_ids.filtered(lambda x: x.state != 'cancel')
-            if self.purchase_id.currency_id != self.purchase_id.company_id.currency_id:
-                if bill.currency_id != bill.company_id.currency_id:
-                    # purchase_rate = 1 / self.purchase_id.currency_rate
-                    purchase_rate = self.purchase_id.currency_id.rate
-                    bill_rate = bill.main_curr_rate
-                    bill_rate = 1 / bill_rate
-                    print('RATE..........', round(purchase_rate, 5), round(bill_rate, 5))
-                    if round(purchase_rate, 5) != round(bill_rate, 5):
-                        # bill_product_ids = bill.invoice_line_ids.mapped('product_id').ids
-                        # products = self.env['cost.adjustments'].search(
-                        #     [('product_id', 'in', bill_product_ids)])
-                        for line in bill.line_ids:
-                            move = self.move_lines.filtered(
-                                lambda x: x.purchase_line_id == line.purchase_line_id)
-                            if move:
-                                valuation_layer = self.env['stock.valuation.layer'].search(
-                                    [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
-                                     ('blank_type', '!=', 'Landed Cost')])
-                                print('line.....', line.debit)
-                                print('-----', valuation_layer.unit_cost, valuation_layer.invoiced_unit_price)
-                                if valuation_layer:
-                                    if valuation_layer.unit_cost != valuation_layer.invoiced_unit_price:
-                                        valuation_layer.value = line.debit
-                                        valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
-                                        valuation_layer.account_move_id.button_draft()
-                                        credit_line = valuation_layer.account_move_id.line_ids.filtered(
-                                            lambda x: x.credit > 0)
-                                        credit_line.with_context(check_move_validity=False).credit = abs(
-                                            valuation_layer.value)
-                                        debit_line = valuation_layer.account_move_id.line_ids.filtered(
-                                            lambda x: x.debit > 0)
-                                        debit_line.with_context(check_move_validity=False).debit = abs(
-                                            valuation_layer.value)
-                                        valuation_layer.account_move_id.action_post()
-                                    else:
-                                        valuation_layer.value = line.debit
-                                        valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
-                                        valuation_layer.account_move_id.button_draft()
-                                        credit_line = valuation_layer.account_move_id.line_ids.filtered(
-                                            lambda x: x.credit > 0)
-                                        credit_line.with_context(check_move_validity=False).credit = abs(
-                                            valuation_layer.value)
-                                        debit_line = valuation_layer.account_move_id.line_ids.filtered(
-                                            lambda x: x.debit > 0)
-                                        debit_line.with_context(check_move_validity=False).debit = abs(
-                                            valuation_layer.value)
-                                        valuation_layer.account_move_id.action_post()
+        print('self.....', self.picking_type_id.code)
+        if self.picking_type_id.code == 'incoming':
+            if self.purchase_id and self.purchase_id.invoice_ids:
+                bill = self.purchase_id.invoice_ids.filtered(lambda x: x.state != 'cancel')
+                if self.purchase_id.currency_id != self.purchase_id.company_id.currency_id:
+                    if bill.currency_id != bill.company_id.currency_id:
+                        # purchase_rate = 1 / self.purchase_id.currency_rate
+                        purchase_rate = self.purchase_id.currency_id.rate
+                        bill_rate = bill.main_curr_rate
+                        bill_rate = 1 / bill_rate
+                        print('RATE..........', round(purchase_rate, 5), round(bill_rate, 5))
+                        if round(purchase_rate, 5) != round(bill_rate, 5):
+                            print('Different Bill Rate')
+                            # bill_product_ids = bill.invoice_line_ids.mapped('product_id').ids
+                            # products = self.env['cost.adjustments'].search(
+                            #     [('product_id', 'in', bill_product_ids)])
+                            for line in bill.line_ids:
+                                move = self.move_lines.filtered(
+                                    lambda x: x.purchase_line_id == line.purchase_line_id)
+                                if move:
+                                    valuation_layer = self.env['stock.valuation.layer'].search(
+                                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                         ('blank_type', '!=', 'Landed Cost')])
+                                    print('line.....', line.debit)
+                                    print('-----', valuation_layer.unit_cost, valuation_layer.invoiced_unit_price)
+                                    if valuation_layer:
+                                        if valuation_layer.unit_cost != valuation_layer.invoiced_unit_price:
+                                            valuation_layer.value = line.debit
+                                            valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
+                                            valuation_layer.account_move_id.button_draft()
+                                            credit_line = valuation_layer.account_move_id.line_ids.filtered(
+                                                lambda x: x.credit > 0)
+                                            credit_line.with_context(check_move_validity=False).credit = abs(
+                                                valuation_layer.value)
+                                            debit_line = valuation_layer.account_move_id.line_ids.filtered(
+                                                lambda x: x.debit > 0)
+                                            debit_line.with_context(check_move_validity=False).debit = abs(
+                                                valuation_layer.value)
+                                            valuation_layer.account_move_id.action_post()
+                                        else:
+                                            valuation_layer.value = line.debit
+                                            valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
+                                            valuation_layer.account_move_id.button_draft()
+                                            credit_line = valuation_layer.account_move_id.line_ids.filtered(
+                                                lambda x: x.credit > 0)
+                                            credit_line.with_context(check_move_validity=False).credit = abs(
+                                                valuation_layer.value)
+                                            debit_line = valuation_layer.account_move_id.line_ids.filtered(
+                                                lambda x: x.debit > 0)
+                                            debit_line.with_context(check_move_validity=False).debit = abs(
+                                                valuation_layer.value)
+                                            valuation_layer.account_move_id.action_post()
 
-                        # bill_product_ids = bill.invoice_line_ids.mapped('product_id').ids
-                        # print('bill_product_ids', bill_product_ids)
-                        # products = self.env['cost.adjustments'].search(
-                        #     [('product_id', 'in', bill_product_ids)])
-                        # print('products', products)
-                        # if not products:
-                        #     for product in bill_product_ids:
-                        #         cost_adjustment = self.env['cost.adjustments'].create(
-                        #             {'product_id': product})
-                        #         print('cost_adjustment-created1', cost_adjustment)
-                        #         cost_adjustment.ca_adjust_confirm()
-                        # else:
-                        #     products = list(set(bill_product_ids) - set(products.mapped('product_id').ids))
-                        #     for product in products:
-                        #         cost_adjustment = self.env['cost.adjustments'].create(
-                        #             {'product_id': product})
-                        #         cost_adjustment.ca_adjust_confirm()
-                        #         print('cost_adjustment-created2', cost_adjustment)
-                    else:
-                        for line in bill.line_ids:
-                            move = self.move_lines.filtered(
-                                lambda x: x.purchase_line_id == line.purchase_line_id)
-                            if move:
-                                valuation_layer = self.env['stock.valuation.layer'].search(
-                                    [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
-                                     ('blank_type', '!=', 'Landed Cost')])
-                                print('line.....fff', line.debit)
+                            # bill_product_ids = bill.invoice_line_ids.mapped('product_id').ids
+                            # print('bill_product_ids', bill_product_ids)
+                            # products = self.env['cost.adjustments'].search(
+                            #     [('product_id', 'in', bill_product_ids)])
+                            # print('products', products)
+                            # if not products:
+                            #     for product in bill_product_ids:
+                            #         cost_adjustment = self.env['cost.adjustments'].create(
+                            #             {'product_id': product})
+                            #         print('cost_adjustment-created1', cost_adjustment)
+                            #         cost_adjustment.ca_adjust_confirm()
+                            # else:
+                            #     products = list(set(bill_product_ids) - set(products.mapped('product_id').ids))
+                            #     for product in products:
+                            #         cost_adjustment = self.env['cost.adjustments'].create(
+                            #             {'product_id': product})
+                            #         cost_adjustment.ca_adjust_confirm()
+                            #         print('cost_adjustment-created2', cost_adjustment)
+                        else:
+                            print('Same Bill Rate')
+                            for line in bill.line_ids:
+                                move = self.move_lines.filtered(
+                                    lambda x: x.purchase_line_id == line.purchase_line_id)
+                                if move:
+                                    valuation_layer = self.env['stock.valuation.layer'].search(
+                                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                         ('blank_type', '!=', 'Landed Cost')])
+                                    print('line.....fff', line.debit)
+                                    valuation_layer.value = line.debit
+                                    valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
+                                    valuation_layer.account_move_id.button_draft()
+                                    credit_line = valuation_layer.account_move_id.line_ids.filtered(
+                                        lambda x: x.credit > 0)
+                                    credit_line.with_context(check_move_validity=False).credit = abs(
+                                        valuation_layer.value)
+                                    debit_line = valuation_layer.account_move_id.line_ids.filtered(
+                                        lambda x: x.debit > 0)
+                                    debit_line.with_context(check_move_validity=False).debit = abs(
+                                        valuation_layer.value)
+                                    valuation_layer.account_move_id.action_post()
+
+                purchase_id = self.purchase_id
+                if purchase_id.currency_id != bill.currency_id:
+                    for line in bill.line_ids:
+                        move = self.move_lines.filtered(
+                            lambda x: x.purchase_line_id == line.purchase_line_id)
+                        print('move...', move)
+                        if move:
+                            valuation_layer = self.env['stock.valuation.layer'].search(
+                                [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
+                                 ('blank_type', '!=', 'Landed Cost')])
+                            print('valuation_layer', valuation_layer)
+                            print('line.....', line.debit)
+                            if valuation_layer:
                                 valuation_layer.value = line.debit
                                 valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
                                 valuation_layer.account_move_id.button_draft()
-                                credit_line = valuation_layer.account_move_id.line_ids.filtered(
-                                    lambda x: x.credit > 0)
-                                credit_line.with_context(check_move_validity=False).credit = abs(
-                                    valuation_layer.value)
-                                debit_line = valuation_layer.account_move_id.line_ids.filtered(
-                                    lambda x: x.debit > 0)
-                                debit_line.with_context(check_move_validity=False).debit = abs(
-                                    valuation_layer.value)
+                                credit_line = valuation_layer.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
+                                credit_line.with_context(check_move_validity=False).credit = abs(valuation_layer.value)
+                                debit_line = valuation_layer.account_move_id.line_ids.filtered(lambda x: x.debit > 0)
+                                debit_line.with_context(check_move_validity=False).debit = abs(valuation_layer.value)
                                 valuation_layer.account_move_id.action_post()
 
-            purchase_id = self.purchase_id
-            if purchase_id.currency_id != bill.currency_id:
+                for line in bill.invoice_line_ids:
+                    purchase_line = line.purchase_line_id.order_id.order_line.filtered(
+                        lambda x: x == line.purchase_line_id)
+
+                    if purchase_line and purchase_line.price_unit != line.price_unit:
+                        products = self.env['cost.adjustments'].search([('product_id', '=', line.product_id.id)])
+                        print('products', products)
+                        if not products:
+                            cost_adjustment = self.env['cost.adjustments'].create({'product_id': line.product_id.id,
+                                                                                   'is_from_bll': True})
+                            cost_adjustment.ca_adjust_confirm()
+                        else:
+                            products.ca_adjust_confirm()
                 for line in bill.line_ids:
-                    move = self.move_lines.filtered(
-                        lambda x: x.purchase_line_id == line.purchase_line_id)
-                    print('move...', move)
-                    if move:
+                    if line.account_id == line.product_id.categ_id.property_stock_account_input_categ_id:
+                        move = self.move_lines.filtered(lambda x: x.purchase_line_id == line.purchase_line_id)
+                        print('move', move, move.product_id.name, line.product_id.name)
                         valuation_layer = self.env['stock.valuation.layer'].search(
                             [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
                              ('blank_type', '!=', 'Landed Cost')])
-                        print('valuation_layer', valuation_layer)
-                        print('line.....', line.debit)
-                        if valuation_layer:
-                            valuation_layer.value = line.debit
-                            valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
-                            valuation_layer.account_move_id.button_draft()
-                            credit_line = valuation_layer.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
-                            credit_line.with_context(check_move_validity=False).credit = abs(valuation_layer.value)
-                            debit_line = valuation_layer.account_move_id.line_ids.filtered(lambda x: x.debit > 0)
-                            debit_line.with_context(check_move_validity=False).debit = abs(valuation_layer.value)
-                            valuation_layer.account_move_id.action_post()
-
-            for line in bill.invoice_line_ids:
-                purchase_line = line.purchase_line_id.order_id.order_line.filtered(lambda x: x == line.purchase_line_id)
-
-                if purchase_line and purchase_line.price_unit != line.price_unit:
-                    products = self.env['cost.adjustments'].search([('product_id', '=', line.product_id.id)])
-                    print('products', products)
-                    if not products:
-                        cost_adjustment = self.env['cost.adjustments'].create({'product_id': line.product_id.id,
-                                                                               'is_from_bll': True})
-                        cost_adjustment.ca_adjust_confirm()
-                    else:
-                        products.ca_adjust_confirm()
-            for line in bill.line_ids:
-                if line.account_id == line.product_id.categ_id.property_stock_account_input_categ_id:
-                    move = self.move_lines.filtered(lambda x: x.purchase_line_id == line.purchase_line_id)
-                    print('move', move, move.product_id.name, line.product_id.name)
-                    valuation_layer = self.env['stock.valuation.layer'].search(
-                        [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
-                         ('blank_type', '!=', 'Landed Cost')])
-                    print('valuation_layer',
-                          valuation_layer)
-                    valuation_layer.account_move_id.has_reconciled_entries = False
-                    to_reconcile = valuation_layer.account_move_id.line_ids.filtered(
-                        lambda x: x.account_id == x.product_id.categ_id.property_stock_account_input_categ_id)
-                    stj_line = to_reconcile
-                    print(to_reconcile, '<<')
-                    to_reconcile = to_reconcile + line
-                    print('to_reconicile', to_reconcile)
-                    stj_line.reconciled = False
-                    line.reconciled = False
-                    print('reconcile', stj_line, stj_line.reconciled)
-                    reconcile = to_reconcile.reconcile()
-                    stj_line.move_id.has_reconciled_entries = True
-                    print('reconcile-final', reconcile)
+                        print('valuation_layer',
+                              valuation_layer)
+                        valuation_layer.account_move_id.has_reconciled_entries = False
+                        to_reconcile = valuation_layer.account_move_id.line_ids.filtered(
+                            lambda x: x.account_id == x.product_id.categ_id.property_stock_account_input_categ_id)
+                        stj_line = to_reconcile
+                        print(to_reconcile, '<<')
+                        to_reconcile = to_reconcile + line
+                        print('to_reconicile', to_reconcile)
+                        stj_line.reconciled = False
+                        line.reconciled = False
+                        print('reconcile', stj_line, stj_line.reconciled)
+                        reconcile = to_reconcile.reconcile()
+                        stj_line.move_id.has_reconciled_entries = True
+                        print('reconcile-final', reconcile)
 
         return res
 
