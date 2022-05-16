@@ -17,101 +17,194 @@ class CostAdjustments(models.Model):
     active = fields.Boolean(string='Active', default=True)
     is_from_bll = fields.Boolean(string='is from bill', default=False)
 
-    def _compute_count(self):
-        product_list = []
+    # def _compute_count(self):
+    #     product_list = []
+    #     self.compute_count()
+    #     for val in self:
+    #         if val.product_id not in product_list:
+    #             product_list.append(val.product_id)
+    #         else:
+    #             val.unlink()
+    #         valuation_layers_all = self.env['stock.valuation.layer'].search(
+    #             [('product_id', '=', val.product_id.id), ('real_date', '!=', False), ('move_type', '!=', 'in_invoice'),
+    #              ('state', '=', 'confirm')])
+    #         valuation_layers = valuation_layers_all.filtered(
+    #             lambda
+    #                 x: x.product_id == val.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Revaluation' and (
+    #                     x.is_manual_receipt or x.value < 0))
+    #         valuation_layers_all._compute_move_type()
+    #         first_layers = valuation_layers.sorted(key=lambda x: x.real_date)
+    #         print('first_layers1', first_layers)
+    #         if valuation_layers and first_layers and first_layers[0].cost_adjustment_id != val:
+    #             first_layer = first_layers.filtered(lambda x: x.cost_adjustment_id == val)
+    #             if not first_layer:
+    #                 # This means this is the case of different unit price
+    #                 valuation_layers = False
+    #
+    #         else:
+    #             if not valuation_layers:
+    #                 valuation_layers = False
+    #             else:
+    #                 first_layer = first_layers[0]
+    #                 print('first_layers2', first_layers)
+    #
+    #         count = 0
+    #         wrong_in_layer = valuation_layers_all.filtered(
+    #             lambda
+    #                 x: x.product_id == val.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Revaluation' and x.value > 0)
+    #         if valuation_layers:
+    #             val.from_date = first_layer.real_date
+    #             print('from_date1', val.from_date)
+    #             stock_out_after_real = valuation_layers_all.filtered(
+    #                 lambda
+    #                     x: x.real_date >= first_layer.real_date and (
+    #                         x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.blank_type != 'Adjustment' and x.move_type != 'in_invoice' and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
+    #             inv_layer = stock_out_after_real.filtered(
+    #                 lambda x: x.stock_move_id.inventory_id and x.value > 0).sorted(key=lambda x: x.real_date)
+    #             if inv_layer:
+    #                 in_layers = valuation_layers_all.filtered(
+    #                     lambda
+    #                         x: x.real_date < inv_layer[0].real_date and x.value > 0)
+    #                 if not in_layers:
+    #                     stock_out_after_real = stock_out_after_real - inv_layer[0]
+    #
+    #             count += len(stock_out_after_real)
+    #             # purchase_layers = self.env['stock.valuation.layer'].search(
+    #             #     [('product_id', '=', val.product_id.id),
+    #             #      ('order_type', '=', 'purchase'), ('margin', '!=', 0)])
+    #             # if purchase_layers:
+    #             #     count += len(purchase_layers)
+    #
+    #             val.count = count
+    #             print(count)
+    #         # else:
+    #         #     purchase_layers = self.env['stock.valuation.layer'].search(
+    #         #         [('product_id', '=', val.product_id.id),
+    #         #          ('order_type', '=', 'purchase'), ('margin', '!=', 0)])
+    #         #     print()
+    #         #     first_layers = purchase_layers.sorted(key=lambda x: x.real_date)
+    #         #     if first_layers:
+    #         #         val.from_date = first_layers[0].real_date
+    #         #         val.count += len(purchase_layers)
+    #         #     else:
+    #         #         val.from_date = False
+    #         #         val.count = 0
+    #
+    #         if val.count == 0:
+    #             valuation_layers = valuation_layers_all.filtered(
+    #                 lambda
+    #                     x: x.product_id == val.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Revaluation')
+    #             first_layers = valuation_layers.sorted(key=lambda x: x.real_date)
+    #             print('first_layers3', first_layers)
+    #             if first_layers:
+    #                 first_layer = first_layers[0]
+    #                 stock_out_after_real = valuation_layers_all.filtered(
+    #                     lambda
+    #                         x: x.real_date >= first_layer.real_date and (
+    #                             x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.blank_type != 'Adjustment' and x.move_type != 'in_invoice' and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
+    #                 count += len(stock_out_after_real)
+    #                 val.count += count
+    #         if val.count == 0:
+    #             val.from_date = False
+    #             val.active = False
+    #         first_layers = valuation_layers.filtered(
+    #             lambda x: x.real_date and (
+    #                     x.value < 0 or x.is_manual_receipt) and x.real_date < x.create_date and x.state == 'confirm')
+    #         first_layers = first_layers.sorted(key=lambda x: x.real_date)
+    #         print('first_layers', first_layers)
+    #         print('valuation_layers2233', valuation_layers)
+    #         if first_layers:
+    #
+    #             val.from_date = first_layers[0].real_date
+    #             print('from_date2', val.from_date)
+    #         else:
+    #             val.from_date = False
 
-        for val in self:
-            if val.product_id not in product_list:
-                product_list.append(val.product_id)
-            else:
-                val.unlink()
+    def _compute_count(self):
+        print('compute_count')
+        for cost_adjustment in self:
+            print('cost_adjustment_cost_adjustment',cost_adjustment)
+            count = 0
+            from_date = 0
             valuation_layers_all = self.env['stock.valuation.layer'].search(
-                [('product_id', '=', val.product_id.id), ('real_date', '!=', False), ('move_type', '!=', 'in_invoice'),
-                 ('state', '=', 'confirm')])
+                [('product_id', '=', cost_adjustment.product_id.id), ('state', '=', 'confirm')]).sorted(
+                key=lambda x: x.real_date)
+            print('valuation_layers_all', valuation_layers_all)
+            valuation_layer_to_be_sorted = valuation_layers_all.filtered(
+                lambda
+                    x: x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
             valuation_layers = valuation_layers_all.filtered(
                 lambda
-                    x: x.product_id == val.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Revaluation' and (
-                        x.is_manual_receipt or x.value < 0))
-            print('DATA......', valuation_layers)
-            valuation_layers_all._compute_move_type()
-            first_layers = valuation_layers.sorted(key=lambda x: x.real_date)
-            print('first_layers', first_layers)
-            if valuation_layers and first_layers and first_layers[0].cost_adjustment_id != val:
-                first_layer = first_layers.filtered(lambda x: x.cost_adjustment_id == val)
-                if not first_layer:
-                    # This means this is the case of different unit price
-                    valuation_layers = False
-
-            else:
-                if not valuation_layers:
-                    valuation_layers = False
-                else:
-                    first_layer = first_layers[0]
-
-            count = 0
-            wrong_in_layer = valuation_layers_all.filtered(
-                lambda
-                    x: x.product_id == val.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Revaluation' and x.value > 0)
+                    x: x.product_id == cost_adjustment.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
+            print('LLLLLLLLL', valuation_layers)
+            out_layers = self.env['stock.valuation.layer']
+            return_layer = valuation_layers_all.filtered(lambda x: x.stock_move_id.origin_returned_move_id)
+            print('return_layer.....', return_layer)
+            new_layers = self.env['stock.valuation.layer']
             if valuation_layers:
-                val.from_date = first_layer.real_date
-                print('val.from_date', val.from_date, first_layer)
-                stock_out_after_real = valuation_layers_all.filtered(
-                    lambda
-                        x: x.real_date >= first_layer.real_date and (
-                            x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.blank_type != 'Adjustment' and x.move_type != 'in_invoice' and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
-                inv_layer = stock_out_after_real.filtered(
-                    lambda x: x.stock_move_id.inventory_id and x.value > 0).sorted(key=lambda x: x.real_date)
-                if inv_layer:
-                    in_layers = valuation_layers_all.filtered(
+                first_layer = valuation_layers.sorted(key=lambda x: x.real_date)
+                out_layers = valuation_layers_all.filtered(
+                    lambda x: (
+                                      x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                              first_layer[0].real_date).sorted(
+                    key=lambda x: x.real_date)
+
+                real_dates = valuation_layer_to_be_sorted.mapped('real_date')
+                real_dates = list(set([r.date() for r in real_dates]))
+                real_dates.sort(key=lambda x: x)
+                real_date_dict = {}
+                for real_date in real_dates:
+                    real_date_dict[real_date] = valuation_layer_to_be_sorted.filtered(
+                        lambda x: x.real_date.date() == real_date)
+                for date in real_date_dict:
+                    in_layer = real_date_dict[date].filtered(lambda x: x.value > 0)
+                    return_out = real_date_dict[date].filtered(
+                        lambda x: x.stock_move_id._is_out() and x.stock_move_id.origin_returned_move_id)
+                    normal_out = real_date_dict[date].filtered(
+                        lambda x: x.stock_move_id._is_out() and not x.stock_move_id.origin_returned_move_id)
+                    combine = in_layer + return_out + normal_out
+                    new_layers += combine
+                out_layer_new = new_layers.filtered(
+                    lambda x: (
+                                      x.stock_move_id._is_out() or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.real_date >=
+                              first_layer[0].real_date)
+
+            if out_layers:
+                for layer in out_layers:
+                    layers = self.env['stock.valuation.layer']
+                    print('********', layer)
+                    for l in new_layers:
+                        if l != layer:
+                            layers += l
+                        else:
+                            break
+                    print('layers....', layers)
+
+                    landed_cost_revaluation_svl = valuation_layers_all.filtered(
                         lambda
-                            x: x.real_date < inv_layer[0].real_date and x.value > 0)
-                    if not in_layers:
-                        stock_out_after_real = stock_out_after_real - inv_layer[0]
+                            x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (
+                                x.real_date <= layer.real_date))
+                    print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
+                    if landed_cost_revaluation_svl:
+                        layers += landed_cost_revaluation_svl
 
-                count += len(stock_out_after_real)
-                print('count--', count)
-                # purchase_layers = self.env['stock.valuation.layer'].search(
-                #     [('product_id', '=', val.product_id.id),
-                #      ('order_type', '=', 'purchase'), ('margin', '!=', 0)])
-                # if purchase_layers:
-                #     count += len(purchase_layers)
+                    unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                        layers.mapped('quantity')) != 0 else 0
+                    print('unit_cost111', layer, unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
+                    if unit_cost == 0:
+                        continue
+                    # if layer.stock_move_id.origin_returned_move_id:
+                    #     unit_cost = layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost
+                    if round(abs(layer.unit_cost), 2) != round(abs(unit_cost), 2):
+                        print('ISSUE--', layer, layer.real_date, layer.unit_cost, abs(unit_cost))
+                        count += 1
+                        print('cost_adjustment',cost_adjustment)
+                        if not cost_adjustment.from_date:
+                            cost_adjustment.from_date = layer.real_date
 
-                val.count = count
-                print('----count', count, len(wrong_in_layer))
-                print(count)
-            # else:
-            #     purchase_layers = self.env['stock.valuation.layer'].search(
-            #         [('product_id', '=', val.product_id.id),
-            #          ('order_type', '=', 'purchase'), ('margin', '!=', 0)])
-            #     print()
-            #     first_layers = purchase_layers.sorted(key=lambda x: x.real_date)
-            #     if first_layers:
-            #         val.from_date = first_layers[0].real_date
-            #         val.count += len(purchase_layers)
-            #     else:
-            #         val.from_date = False
-            #         val.count = 0
-
-            if val.count == 0:
-                valuation_layers = valuation_layers_all.filtered(
-                    lambda
-                        x: x.product_id == val.product_id and x.real_date < x.create_date and x.blank_type != 'Adjustment' and x.blank_type != 'Revaluation')
-                first_layers = valuation_layers.sorted(key=lambda x: x.real_date)
-                if first_layers:
-                    first_layer = first_layers[0]
-                    stock_out_after_real = valuation_layers_all.filtered(
-                        lambda
-                            x: x.real_date >= first_layer.real_date and (
-                                x.value < 0 or x.is_manual_receipt == True or x.stock_move_id.inventory_id) and x.blank_type != 'Adjustment' and x.move_type != 'in_invoice' and x.blank_type != 'Landed Cost' and x.blank_type != 'Revaluation')
-                    count += len(stock_out_after_real)
-                    val.count += count
-            if val.count == 0:
-                val.from_date = False
-                val.active = False
-            if first_layers:
-                val.from_date = first_layer.real_date
-            else:
-                val.from_date = False
+            cost_adjustment.count = count
+            if not cost_adjustment.from_date:
+                cost_adjustment.from_date = False
 
     def cost_adjustment(self):
         view = self.env.ref('cost_adjustments.adjust_cost_warning_wizard')
@@ -130,10 +223,7 @@ class CostAdjustments(models.Model):
         ICPSudo = self.env['ir.config_parameter'].sudo()
         automatic_cost_adjustment = ICPSudo.get_param('cost_adjustment.automatic_cost_adjustment')
         if automatic_cost_adjustment:
-            print("ca_adjust_confirm_scheduler")
             cost_adjustments = self.env['cost.adjustments'].search([])
-            print("cost_adjustments", cost_adjustments)
-
             for cost_adjustment in cost_adjustments:
                 user_error_case = False
                 valuation_layers_all = self.env['stock.valuation.layer'].search(
@@ -209,22 +299,22 @@ class CostAdjustments(models.Model):
                                 break
                         landed_cost_revaluation_svl = valuation_layers_all.filtered(
                             lambda
-                                x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (x.real_date <= layer.real_date))
+                                x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (
+                                    x.real_date <= layer.real_date))
                         print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                         if landed_cost_revaluation_svl:
                             layers += landed_cost_revaluation_svl
                         print('LAYERS_FINAL..', layers)
-                        unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                        unit_cost = abs(sum(layers.mapped('value')) / sum(layers.mapped('quantity'))) if sum(
                             layers.mapped('quantity')) != 0 else 0
                         print('unit_cost', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
                         if unit_cost == 0:
                             continue
                         if layer.stock_move_id.origin_returned_move_id:
-                            unit_cost = layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost
-                            print('..........u......', unit_cost, layer.stock_move_id.origin_returned_move_id,
-                                  layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids)
+                            unit_cost = abs(
+                                layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost)
 
-                        layer.unit_cost = unit_cost
+                        layer.unit_cost = abs(unit_cost)
                         actual_value = unit_cost * layer.quantity
                         layer.value = actual_value
                         print('LAYER', layer.value)
@@ -401,11 +491,8 @@ class CostAdjustments(models.Model):
                     for rl in return_layer:
                         return_svl = self.env['stock.valuation.layer'].search(
                             [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id)])
-                        print('initial', rl, rl.unit_cost, rl.value)
-                        rl.unit_cost = return_svl.unit_cost
+                        rl.unit_cost = abs(return_svl.unit_cost)
                         rl.value = return_svl.unit_cost * rl.quantity
-                        print('---->', return_svl)
-                        print('after---->', rl.unit_cost, rl.value)
                         rl.account_move_id.button_draft()
                         credit_line = rl.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
                         credit_line.with_context(check_move_validity=False).credit = abs(rl.value)
@@ -416,7 +503,6 @@ class CostAdjustments(models.Model):
                     cost_adjustment.active = False
                     total_quantity = sum(valuation_layers_all.mapped('quantity'))
                     value1 = sum(valuation_layers_all.mapped('value'))
-                    print('Price0,', value1 / total_quantity if total_quantity != 0 else 0)
                     cost_adjustment.product_id.with_context(
                         cost_adjustment=True).standard_price = value1 / total_quantity if total_quantity != 0 else 0
 
@@ -490,7 +576,8 @@ class CostAdjustments(models.Model):
                     print('layers....to_consider', layers)
                     landed_cost_revaluation_svl = valuation_layers_all.filtered(
                         lambda
-                            x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (x.real_date <= layer.real_date))
+                            x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (
+                                x.real_date <= layer.real_date))
                     print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                     if landed_cost_revaluation_svl:
                         layers += landed_cost_revaluation_svl
@@ -500,17 +587,15 @@ class CostAdjustments(models.Model):
                         else:
                             raise UserError(
                                 _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
-                    unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                    unit_cost = abs(sum(layers.mapped('value')) / sum(layers.mapped('quantity'))) if sum(
                         layers.mapped('quantity')) != 0 else 0
                     print('unit_cost', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
                     if unit_cost == 0:
                         continue
                     if layer.stock_move_id.origin_returned_move_id:
-                        unit_cost = layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost
-                        print('..........u......', unit_cost, layer.stock_move_id.origin_returned_move_id,
-                              layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids)
+                        unit_cost = abs(layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost)
 
-                    layer.unit_cost = unit_cost
+                    layer.unit_cost = abs(unit_cost)
                     actual_value = unit_cost * layer.quantity
                     layer.value = actual_value
                     print('LAYER', layer.value)
@@ -527,7 +612,7 @@ class CostAdjustments(models.Model):
                 if in_svl:
                     for svl in in_svl:
                         if not svl.account_move_id.has_reconciled_entries:
-                            svl.unit_cost = svl.invoiced_unit_price
+                            svl.unit_cost = abs(svl.invoiced_unit_price)
                             svl.value = svl.invoiced_amount
                             print('svl.unit_cost', svl.unit_cost, svl.value)
                             svl.account_move_id.button_draft()
@@ -552,13 +637,13 @@ class CostAdjustments(models.Model):
                                 if not layers:
                                     raise UserError(
                                         _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
-                                unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                                unit_cost = abs(sum(layers.mapped('value')) / sum(layers.mapped('quantity'))) if sum(
                                     layers.mapped('quantity')) != 0 else 0
                                 print('unit_cost7777', unit_cost, sum(layers.mapped('value')),
                                       sum(layers.mapped('quantity')))
                                 if unit_cost == 0:
                                     continue
-                                layer.unit_cost = unit_cost
+                                layer.unit_cost = abs(unit_cost)
                                 actual_value = unit_cost * layer.quantity
                                 layer.value = actual_value
                                 print('LAYER2', layer.value)
@@ -580,7 +665,7 @@ class CostAdjustments(models.Model):
                     for svl in in_svl:
                         print('svl.unit_cost', svl, svl.unit_cost, svl.invoiced_unit_price, svl.value)
 
-                        svl.unit_cost = svl.invoiced_unit_price
+                        svl.unit_cost = abs(svl.invoiced_unit_price)
                         svl.value = svl.invoiced_amount
                         print('svl.unit_cost', svl.unit_cost, svl.value)
                         svl.account_move_id.button_draft()
@@ -604,11 +689,11 @@ class CostAdjustments(models.Model):
                             if not layers:
                                 raise UserError(
                                     _('You need to register a Inventory Receipt with a Real Date on the same date or before the Real Date of the Delivery or you need to change the Real Date of the Delivery Order'))
-                            unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                            unit_cost = abs(sum(layers.mapped('value')) / sum(layers.mapped('quantity'))) if sum(
                                 layers.mapped('quantity')) != 0 else 0
                             print('unit_cost7777', unit_cost, sum(layers.mapped('value')),
                                   sum(layers.mapped('quantity')))
-                            layer.unit_cost = unit_cost
+                            layer.unit_cost = abs(unit_cost)
                             actual_value = unit_cost * layer.quantity
                             layer.value = actual_value
                             print('LAYER2', layer.value)
@@ -666,7 +751,7 @@ class CostAdjustments(models.Model):
                                 break
                         landed_cost_revaluation_svl = valuation_layers_all.filtered(
                             lambda x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (
-                                        x.real_date <= layer.real_date))
+                                    x.real_date <= layer.real_date))
                         print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                         if landed_cost_revaluation_svl:
                             layers += landed_cost_revaluation_svl
@@ -676,7 +761,7 @@ class CostAdjustments(models.Model):
                         unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
                             layers.mapped('quantity')) != 0 else 0
                         print('unit_cost2', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
-                        layer.unit_cost = unit_cost
+                        layer.unit_cost = abs(unit_cost)
                         actual_value = unit_cost * layer.quantity
                         layer.value = actual_value
                         print('LAYER2', layer.value)
@@ -690,9 +775,10 @@ class CostAdjustments(models.Model):
             if return_layer:
                 for rl in return_layer:
                     return_svl = self.env['stock.valuation.layer'].search(
-                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
+                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),
+                         ('blank_type', '!=', 'Landed Cost')])
                     print('initial', rl, rl.unit_cost, rl.value)
-                    rl.unit_cost = return_svl.unit_cost
+                    rl.unit_cost = abs(return_svl.unit_cost)
                     rl.value = return_svl.unit_cost * rl.quantity
                     print('---->', return_svl)
                     print('after---->', rl.unit_cost, rl.value)
@@ -798,7 +884,7 @@ class CostAdjustWarning(models.TransientModel):
                     landed_cost_revaluation_svl = valuation_layers_all.filtered(
                         lambda
                             x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (
-                                    x.real_date <= layer.real_date))
+                                x.real_date <= layer.real_date))
                     print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                     if landed_cost_revaluation_svl:
                         layers += landed_cost_revaluation_svl
@@ -806,9 +892,10 @@ class CostAdjustWarning(models.TransientModel):
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
-                                [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
+                                [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),
+                                 ('blank_type', '!=', 'Landed Cost')])
                             print('initial', rl, rl.unit_cost, rl.value)
-                            rl.unit_cost = return_svl.unit_cost
+                            rl.unit_cost = abs(return_svl.unit_cost)
                             rl.value = return_svl.unit_cost * rl.quantity
                             print('---->', return_svl)
                             print('after---->', rl.unit_cost, rl.value)
@@ -832,7 +919,7 @@ class CostAdjustWarning(models.TransientModel):
                     if layer.stock_move_id.origin_returned_move_id:
                         unit_cost = layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost
 
-                    layer.unit_cost = unit_cost
+                    layer.unit_cost = abs(unit_cost)
                     actual_value = unit_cost * layer.quantity
                     layer.value = actual_value
                     print('LAYER', layer.value)
@@ -970,9 +1057,10 @@ class CostAdjustWarning(models.TransientModel):
             if return_layer:
                 for rl in return_layer:
                     return_svl = self.env['stock.valuation.layer'].search(
-                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
+                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),
+                         ('blank_type', '!=', 'Landed Cost')])
                     print('initial', rl, rl.unit_cost, rl.value)
-                    rl.unit_cost = return_svl.unit_cost
+                    rl.unit_cost = abs(return_svl.unit_cost)
                     rl.value = return_svl.unit_cost * rl.quantity
                     print('---->', return_svl)
                     print('after---->', rl.unit_cost, rl.value)
@@ -1111,16 +1199,18 @@ class CostAdjustWizard(models.TransientModel):
                     print('layers....1', layers)
                     landed_cost_revaluation_svl = valuation_layers_all.filtered(
                         lambda
-                            x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (x.real_date <= layer.real_date))
+                            x: (x.blank_type == 'Landed Cost' or x.blank_type == 'Revaluation') and (
+                                x.real_date <= layer.real_date))
                     print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                     if landed_cost_revaluation_svl:
                         layers += landed_cost_revaluation_svl
                     if return_layer:
                         for rl in return_layer:
                             return_svl = self.env['stock.valuation.layer'].search(
-                                [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
+                                [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),
+                                 ('blank_type', '!=', 'Landed Cost')])
                             print('initial', rl, rl.unit_cost, rl.value)
-                            rl.unit_cost = return_svl.unit_cost
+                            rl.unit_cost = abs(return_svl.unit_cost)
                             rl.value = return_svl.unit_cost * rl.quantity
                             print('---->', return_svl)
                             print('after---->', rl.unit_cost, rl.value)
@@ -1143,7 +1233,7 @@ class CostAdjustWizard(models.TransientModel):
                     if layer.stock_move_id.origin_returned_move_id:
                         unit_cost = layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost
 
-                    layer.unit_cost = unit_cost
+                    layer.unit_cost = abs(unit_cost)
                     actual_value = unit_cost * layer.quantity
                     layer.value = actual_value
                     print('LAYER', layer.value)
@@ -1315,9 +1405,10 @@ class CostAdjustWizard(models.TransientModel):
             if return_layer:
                 for rl in return_layer:
                     return_svl = self.env['stock.valuation.layer'].search(
-                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
+                        [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),
+                         ('blank_type', '!=', 'Landed Cost')])
                     print('initial', rl, rl.unit_cost, rl.value)
-                    rl.unit_cost = return_svl.unit_cost
+                    rl.unit_cost = abs(return_svl.unit_cost)
                     rl.value = return_svl.unit_cost * rl.quantity
                     print('---->', return_svl)
                     print('after---->', rl.unit_cost, rl.value)

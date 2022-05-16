@@ -48,7 +48,7 @@ class StockValuationLayer(models.Model):
                 total_value = sum(component_svl.mapped('value'))
                 total_qty = sum(component_svl.mapped('value'))
                 layer.value = total_value
-                layer.unit_cost = total_value / layer.quantity
+                layer.unit_cost = abs(total_value / layer.quantity)
                 print('total_value...', total_value)
 
             if layer.stock_move_id.production_id or layer.stock_move_id.raw_material_production_id:
@@ -84,7 +84,7 @@ class StockValuationLayer(models.Model):
                     print('value_to_add', value_to_add)
                     print('Landed', landed_move, landed_move.additional_landed_cost)
                     svl.value += value_to_add
-                    svl.unit_cost = svl.value / svl.quantity if svl.quantity else 0.0
+                    svl.unit_cost = abs(svl.value / svl.quantity )if svl.quantity else 0.0
                     svl.account_move_id.button_draft()
                     credit_line = svl.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
                     credit_line.with_context(check_move_validity=False).credit = abs(svl.value)

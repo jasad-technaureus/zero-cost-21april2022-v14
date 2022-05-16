@@ -4,7 +4,7 @@
 
 {
     'name': 'POS Real Date on Transfers',
-    'version': '14.0.0.1',
+    'version': '14.0.0.2',
     'author': 'Zero | Odoo Partner',
     'website': 'zero.com.al',
     'category': 'Accounting',

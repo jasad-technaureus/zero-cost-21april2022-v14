@@ -190,7 +190,7 @@ class StockValuationLayer(models.Model):
                     cost_adjustment = self.env['cost.adjustments'].create(
                         {'product_id': svl.product_id.id})
                 if svl.unit_cost != return_svl.unit_cost:
-                    svl.unit_cost = return_svl.unit_cost
+                    svl.unit_cost = abs(return_svl.unit_cost)
                     svl.value = svl.unit_cost * svl.quantity
                     valuation_layers_all = self.env['stock.valuation.layer'].search(
                         [('product_id', '=', svl.product_id.id), ('real_date', '!=', False),
@@ -200,7 +200,6 @@ class StockValuationLayer(models.Model):
                     print('hhhhhhhh', total_quantity)
                     value1 = sum(valuation_layers_all.mapped('value'))
                     print('kkkkkkkkkkkkk', value1, total_quantity)
-                    print('Price0,', value1 / total_quantity if total_quantity != 0 else 0)
                     svl.product_id.with_context(
                         cost_adjustment=True).standard_price = value1 / total_quantity if total_quantity != 0 else 0
                     return svl
@@ -240,8 +239,6 @@ class StockValuationLayer(models.Model):
                 else:
                     products = self.env['cost.adjustments'].search(
                         [('product_id', '=', svl.stock_move_id.product_id.id)])
-                    print('svl.account_move_id.move_type', svl.stock_move_id.picking_id.account_move_id,
-                          svl.stock_move_id.picking_id.account_move_id.move_type)
                     if not products:
                         cost_adjustment = self.env['cost.adjustments'].create(
                             {'product_id': svl.product_id.id})
@@ -250,17 +247,18 @@ class StockValuationLayer(models.Model):
 
                         print('svl.cost_adjustment_id', svl.cost_adjustment_id)
 
-                    # products = self.env['cost.adjustments'].search(
-                    #     [('product_id', '=', svl.stock_move_id.product_id.id)])
-                    # if not products:
-                    #     cost_adjustment = self.env['cost.adjustments'].create(
-                    #         {'product_id': svl.product_id.id})
-                    #     svl.cost_adjustment_id = cost_adjustment.id
-                    #     cost_adjustment._compute_count()
-                    # svl.unit_cost = return_svl.unit_cost
-                    # svl.value = svl.unit_cost * svl.quantity
-                # if svl.unit_cost !=
-
+            bill_line = svl.stock_move_id.purchase_line_id
+            svl._compute_move_type()
+            print('??', svl.account_move_id)
+            print('bill_line', bill_line)
+            if svl.stock_move_id.picking_id.purchase_id.invoice_ids:
+                invoice_line = svl.stock_move_id.picking_id.purchase_id.invoice_ids[0].invoice_line_ids.filtered(
+                    lambda x: x.purchase_line_id == svl.stock_move_id.purchase_line_id)
+                print('invoice_line............:::', invoice_line)
+                unit_cost = abs(invoice_line.debit / invoice_line.quantity)
+                svl.unit_cost = abs(unit_cost)
+                svl.value = svl.unit_cost * svl.quantity
+                print('VALUEEE', svl.value)
         return res
 
 
@@ -676,12 +674,22 @@ class StockPicking(models.Model):
                                     valuation_layer = self.env['stock.valuation.layer'].search(
                                         [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
                                          ('blank_type', '!=', 'Landed Cost')])
+                                    print('valuation_layer_check', valuation_layer)
                                     print('line.....', line.debit)
                                     print('-----', valuation_layer.unit_cost, valuation_layer.invoiced_unit_price)
                                     if valuation_layer:
-                                        if valuation_layer.unit_cost != valuation_layer.invoiced_unit_price:
-                                            valuation_layer.value = line.debit
-                                            valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
+                                        if valuation_layer.stock_move_id.picking_id.purchase_id.invoice_ids:
+                                            invoice_line = valuation_layer.stock_move_id.picking_id.purchase_id.invoice_ids[
+                                                0].invoice_line_ids.filtered(
+                                                lambda x: x.purchase_line_id == valuation_layer.stock_move_id.purchase_line_id)
+                                            print('invoice_line............:::', invoice_line)
+                                            unit_cost = abs(invoice_line.debit / invoice_line.quantity)
+                                            valuation_layer.unit_cost = abs(unit_cost)
+                                            valuation_layer.value = valuation_layer.unit_cost * valuation_layer.quantity
+                                            print('VALUEEE2', valuation_layer.value)
+                                        # if valuation_layer.unit_cost != valuation_layer.invoiced_unit_price:
+                                        #     valuation_layer.value = line.debit
+                                        #     valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
                                             valuation_layer.account_move_id.button_draft()
                                             credit_line = valuation_layer.account_move_id.line_ids.filtered(
                                                 lambda x: x.credit > 0)
@@ -694,7 +702,7 @@ class StockPicking(models.Model):
                                             valuation_layer.account_move_id.action_post()
                                         else:
                                             valuation_layer.value = line.debit
-                                            valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
+                                            valuation_layer.unit_cost = abs(valuation_layer.value / valuation_layer.quantity)
                                             valuation_layer.account_move_id.button_draft()
                                             credit_line = valuation_layer.account_move_id.line_ids.filtered(
                                                 lambda x: x.credit > 0)
@@ -705,25 +713,6 @@ class StockPicking(models.Model):
                                             debit_line.with_context(check_move_validity=False).debit = abs(
                                                 valuation_layer.value)
                                             valuation_layer.account_move_id.action_post()
-
-                            # bill_product_ids = bill.invoice_line_ids.mapped('product_id').ids
-                            # print('bill_product_ids', bill_product_ids)
-                            # products = self.env['cost.adjustments'].search(
-                            #     [('product_id', 'in', bill_product_ids)])
-                            # print('products', products)
-                            # if not products:
-                            #     for product in bill_product_ids:
-                            #         cost_adjustment = self.env['cost.adjustments'].create(
-                            #             {'product_id': product})
-                            #         print('cost_adjustment-created1', cost_adjustment)
-                            #         cost_adjustment.ca_adjust_confirm()
-                            # else:
-                            #     products = list(set(bill_product_ids) - set(products.mapped('product_id').ids))
-                            #     for product in products:
-                            #         cost_adjustment = self.env['cost.adjustments'].create(
-                            #             {'product_id': product})
-                            #         cost_adjustment.ca_adjust_confirm()
-                            #         print('cost_adjustment-created2', cost_adjustment)
                         else:
                             print('Same Bill Rate')
                             for line in bill.line_ids:
@@ -735,7 +724,7 @@ class StockPicking(models.Model):
                                          ('blank_type', '!=', 'Landed Cost')])
                                     print('line.....fff', line.debit)
                                     valuation_layer.value = line.debit
-                                    valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
+                                    valuation_layer.unit_cost = abs(valuation_layer.value / valuation_layer.quantity) if valuation_layer.quantity!=0 else 0
                                     valuation_layer.account_move_id.button_draft()
                                     credit_line = valuation_layer.account_move_id.line_ids.filtered(
                                         lambda x: x.credit > 0)
@@ -757,11 +746,11 @@ class StockPicking(models.Model):
                             valuation_layer = self.env['stock.valuation.layer'].search(
                                 [('stock_move_id', '=', move.id), ('state', '=', 'confirm'),
                                  ('blank_type', '!=', 'Landed Cost')])
-                            print('valuation_layer', valuation_layer)
+                            print('valuation_layer%', valuation_layer)
                             print('line.....', line.debit)
                             if valuation_layer:
                                 valuation_layer.value = line.debit
-                                valuation_layer.unit_cost = valuation_layer.value / valuation_layer.quantity
+                                valuation_layer.unit_cost = abs(valuation_layer.value / valuation_layer.quantity)
                                 valuation_layer.account_move_id.button_draft()
                                 credit_line = valuation_layer.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
                                 credit_line.with_context(check_move_validity=False).credit = abs(valuation_layer.value)
@@ -804,7 +793,6 @@ class StockPicking(models.Model):
                         reconcile = to_reconcile.reconcile()
                         stj_line.move_id.has_reconciled_entries = True
                         print('reconcile-final', reconcile)
-
         return res
 
     def action_cancel(self):
@@ -854,7 +842,6 @@ class StockMove(models.Model):
 
         # self cannot contain moves that are either cancelled or done, therefore we can safely
         # unlink all associated move_line_ids
-        print('moves_to_cancel', moves_to_cancel, moves_to_cancel.product_uom_qty, moves_to_cancel.quantity_done)
         moves_to_cancel._do_unreserve()
 
         for move in moves_to_cancel:

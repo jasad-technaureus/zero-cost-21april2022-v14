@@ -106,17 +106,16 @@ class CostAdjustments(models.Model):
                         print('landed_cost_revaluation_svl', landed_cost_revaluation_svl)
                         if landed_cost_revaluation_svl:
                             layers += landed_cost_revaluation_svl
-                        unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                        unit_cost = abs(sum(layers.mapped('value')) / sum(layers.mapped('quantity'))) if sum(
                             layers.mapped('quantity')) != 0 else 0
                         print('unit_cost', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
                         if unit_cost == 0:
                             continue
                         if layer.stock_move_id.origin_returned_move_id:
-                            unit_cost = layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost
-                            print('..........u......', unit_cost, layer.stock_move_id.origin_returned_move_id,
-                                  layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids)
+                            unit_cost = abs(layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost)
 
-                        layer.unit_cost = unit_cost
+
+                        layer.unit_cost = abs(unit_cost)
                         actual_value = unit_cost * layer.quantity
                         layer.value = actual_value
                         print('LAYER', layer.value)
@@ -150,7 +149,7 @@ class CostAdjustments(models.Model):
                         if in_svl:
                             for svl in in_svl:
                                 if not svl.account_move_id.has_reconciled_entries:
-                                    svl.unit_cost = svl.invoiced_unit_price
+                                    svl.unit_cost = abs(svl.invoiced_unit_price)
                                     svl.value = svl.invoiced_amount
                                     print('svl.unit_cost', svl.unit_cost, svl.value)
                                     svl.account_move_id.button_draft()
@@ -175,7 +174,7 @@ class CostAdjustments(models.Model):
                                         if not layers:
                                             break
 
-                                        unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                                        unit_cost = abs(sum(layers.mapped('value')) / sum(layers.mapped('quantity'))) if sum(
                                             layers.mapped('quantity')) != 0 else 0
                                         print('unit_cost7777', unit_cost, sum(layers.mapped('value')),
                                               sum(layers.mapped('quantity')))
@@ -183,7 +182,7 @@ class CostAdjustments(models.Model):
                                             continue
                                         # if layer[3]:
                                         #     print('check',layer[3])
-                                        layer.unit_cost = unit_cost
+                                        layer.unit_cost = abs(unit_cost)
                                         actual_value = unit_cost * layer.quantity
                                         layer.value = actual_value
                                         print('LAYER2', layer.value)
@@ -223,7 +222,7 @@ class CostAdjustments(models.Model):
                     if in_svl:
                         for svl in in_svl:
                             if not svl.account_move_id.has_reconciled_entries:
-                                svl.unit_cost = svl.invoiced_unit_price
+                                svl.unit_cost = abs(svl.invoiced_unit_price)
                                 svl.value = svl.invoiced_amount
                                 print('svl.unit_cost', svl.unit_cost, svl.value)
                                 svl.account_move_id.button_draft()
@@ -247,13 +246,13 @@ class CostAdjustments(models.Model):
                                     if not layers:
                                         break
 
-                                    unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                                    unit_cost = abs(sum(layers.mapped('value')) / sum(layers.mapped('quantity'))) if sum(
                                         layers.mapped('quantity')) != 0 else 0
                                     print('unit_cost7777', unit_cost, sum(layers.mapped('value')),
                                           sum(layers.mapped('quantity')))
                                     # if layer[3]:
                                     #     print('check',layer[3])
-                                    layer.unit_cost = unit_cost
+                                    layer.unit_cost = abs(unit_cost)
                                     actual_value = unit_cost * layer.quantity
                                     layer.value = actual_value
                                     print('LAYER2', layer.value)
@@ -330,12 +329,12 @@ class CostAdjustments(models.Model):
                                 user_error_case = True
                                 break
 
-                            unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
+                            unit_cost = abs(sum(layers.mapped('value')) / sum(layers.mapped('quantity'))) if sum(
                                 layers.mapped('quantity')) != 0 else 0
                             print('unit_cost2', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
                             # if layer[3]:
                             #     print('check',layer[3])
-                            layer.unit_cost = unit_cost
+                            layer.unit_cost = abs(unit_cost)
                             actual_value = unit_cost * layer.quantity
                             layer.value = actual_value
                             print('LAYER2', layer.value)
@@ -470,7 +469,7 @@ class CostAdjustments(models.Model):
                         print('..........u......', unit_cost, layer.stock_move_id.origin_returned_move_id,
                               layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids)
 
-                    layer.unit_cost = unit_cost
+                    layer.unit_cost = abs(unit_cost)
                     actual_value = unit_cost * layer.quantity
                     layer.value = actual_value
                     print('LAYER', layer.value)
@@ -503,7 +502,7 @@ class CostAdjustments(models.Model):
                 if in_svl:
                     for svl in in_svl:
                         if not svl.account_move_id.has_reconciled_entries:
-                            svl.unit_cost = svl.invoiced_unit_price
+                            svl.unit_cost = abs(svl.invoiced_unit_price)
                             svl.value = svl.invoiced_amount
                             print('svl.unit_cost', svl.unit_cost, svl.value)
                             svl.account_move_id.button_draft()
@@ -536,7 +535,7 @@ class CostAdjustments(models.Model):
                                     continue
                                 # if layer[3]:
                                 #     print('check',layer[3])
-                                layer.unit_cost = unit_cost
+                                layer.unit_cost = abs(unit_cost)
                                 actual_value = unit_cost * layer.quantity
                                 layer.value = actual_value
                                 print('LAYER2', layer.value)
@@ -574,7 +573,7 @@ class CostAdjustments(models.Model):
                     for svl in in_svl:
                         print('svl.unit_cost', svl, svl.unit_cost, svl.invoiced_unit_price, svl.value)
 
-                        svl.unit_cost = svl.invoiced_unit_price
+                        svl.unit_cost = abs(svl.invoiced_unit_price)
                         svl.value = svl.invoiced_amount
                         print('svl.unit_cost', svl.unit_cost, svl.value)
                         svl.account_move_id.button_draft()
@@ -604,7 +603,7 @@ class CostAdjustments(models.Model):
                                   sum(layers.mapped('quantity')))
                             # if layer[3]:
                             #     print('check',layer[3])
-                            layer.unit_cost = unit_cost
+                            layer.unit_cost = abs(unit_cost)
                             actual_value = unit_cost * layer.quantity
                             layer.value = actual_value
                             print('LAYER2', layer.value)
@@ -690,7 +689,7 @@ class CostAdjustments(models.Model):
                             layers.mapped('quantity')) != 0 else 0
                         print('unit_cost2', unit_cost, sum(layers.mapped('value')), sum(layers.mapped('quantity')))
 
-                        layer.unit_cost = unit_cost
+                        layer.unit_cost = abs(unit_cost)
                         actual_value = unit_cost * layer.quantity
                         layer.value = actual_value
                         print('LAYER2', layer.value)
@@ -816,7 +815,7 @@ class CostAdjustWarning(models.TransientModel):
                             return_svl = self.env['stock.valuation.layer'].search(
                                 [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                             print('initial', rl, rl.unit_cost, rl.value)
-                            rl.unit_cost = return_svl.unit_cost
+                            rl.unit_cost = abs(return_svl.unit_cost)
                             rl.value = return_svl.unit_cost * rl.quantity
                             print('---->', return_svl)
                             print('after---->', rl.unit_cost, rl.value)
@@ -840,7 +839,7 @@ class CostAdjustWarning(models.TransientModel):
                         r_layer=layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.filtered(lambda x:x.blank_type!='Landed Cost')
                         unit_cost = r_layer.unit_cost
 
-                    layer.unit_cost = unit_cost
+                    layer.unit_cost = abs(unit_cost)
                     actual_value = unit_cost * layer.quantity
                     layer.value = actual_value
                     print('LAYER', layer.value)
@@ -929,7 +928,7 @@ class CostAdjustWarning(models.TransientModel):
                 if in_svl:
                     for svl in in_svl:
                         if not svl.account_move_id.has_reconciled_entries:
-                            svl.unit_cost = svl.invoiced_unit_price
+                            svl.unit_cost = abs(svl.invoiced_unit_price)
                             svl.value = svl.invoiced_amount
                             svl.account_move_id.button_draft()
                             credit_line = svl.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
@@ -957,7 +956,7 @@ class CostAdjustWarning(models.TransientModel):
                                 unit_cost = sum(layers.mapped('value')) / sum(layers.mapped('quantity')) if sum(
                                     layers.mapped('quantity')) != 0 else 0
 
-                                layer.unit_cost = unit_cost
+                                layer.unit_cost = abs(unit_cost)
                                 actual_value = unit_cost * layer.quantity
                                 layer.value = actual_value
                                 layer.account_move_id.button_draft()
@@ -1037,7 +1036,7 @@ class CostAdjustWarning(models.TransientModel):
                                 return_svl = self.env['stock.valuation.layer'].search(
                                     [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                                 print('initial', rl, rl.unit_cost, rl.value)
-                                rl.unit_cost = return_svl.unit_cost
+                                rl.unit_cost = abs(return_svl.unit_cost)
                                 rl.value = return_svl.unit_cost * rl.quantity
                                 print('return-after---->', rl, rl.unit_cost, rl.value)
                                 rl.account_move_id.button_draft()
@@ -1054,7 +1053,7 @@ class CostAdjustWarning(models.TransientModel):
                         print('unit_cost....2', layer, unit_cost, sum(layers.mapped('value')),
                               sum(layers.mapped('quantity')))
 
-                        layer.unit_cost = unit_cost
+                        layer.unit_cost = abs(unit_cost)
                         actual_value = unit_cost * layer.quantity
                         layer.value = actual_value
                         print('Value......2', layer, layer.value)
@@ -1083,7 +1082,7 @@ class CostAdjustWarning(models.TransientModel):
                     return_svl = self.env['stock.valuation.layer'].search(
                         [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                     print('initial', rl, rl.unit_cost, rl.value)
-                    rl.unit_cost = return_svl.unit_cost
+                    rl.unit_cost = abs(return_svl.unit_cost)
                     rl.value = return_svl.unit_cost * rl.quantity
                     print('---->', return_svl)
                     print('after---->', rl.unit_cost, rl.value)
@@ -1218,7 +1217,7 @@ class CostAdjustWizard(models.TransientModel):
                             return_svl = self.env['stock.valuation.layer'].search(
                                 [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                             print('initial', rl, rl.unit_cost, rl.value)
-                            rl.unit_cost = return_svl.unit_cost
+                            rl.unit_cost = asb(return_svl.unit_cost)
                             rl.value = return_svl.unit_cost * rl.quantity
                             print('---->', return_svl)
                             print('after---->', rl.unit_cost, rl.value)
@@ -1241,7 +1240,7 @@ class CostAdjustWizard(models.TransientModel):
                     if layer.stock_move_id.origin_returned_move_id:
                         unit_cost = layer.stock_move_id.origin_returned_move_id.stock_valuation_layer_ids.unit_cost
 
-                    layer.unit_cost = unit_cost
+                    layer.unit_cost = abs(unit_cost)
                     actual_value = unit_cost * layer.quantity
                     layer.value = actual_value
                     print('LAYER', layer.value)
@@ -1271,7 +1270,7 @@ class CostAdjustWizard(models.TransientModel):
                 if in_svl:
                     for svl in in_svl:
                         if not svl.account_move_id.has_reconciled_entries:
-                            svl.unit_cost = svl.invoiced_unit_price
+                            svl.unit_cost = abs(svl.invoiced_unit_price)
                             svl.value = svl.invoiced_amount
                             print('svl.unit_cost', svl.unit_cost, svl.value)
                             svl.account_move_id.button_draft()
@@ -1298,7 +1297,7 @@ class CostAdjustWizard(models.TransientModel):
                                     continue
                                 # if layer[3]:
                                 #     print('check',layer[3])
-                                layer.unit_cost = unit_cost
+                                layer.unit_cost = abs(unit_cost)
                                 actual_value = unit_cost * layer.quantity
                                 layer.value = actual_value
                                 print('LAYER2', layer.value)
@@ -1331,7 +1330,7 @@ class CostAdjustWizard(models.TransientModel):
                 if in_svl:
                     for svl in in_svl:
                         if not svl.account_move_id.has_reconciled_entries:
-                            svl.unit_cost = svl.invoiced_unit_price
+                            svl.unit_cost = abs(svl.invoiced_unit_price)
                             svl.value = svl.invoiced_amount
                             svl.account_move_id.button_draft()
                             credit_line = svl.account_move_id.line_ids.filtered(lambda x: x.credit > 0)
@@ -1355,7 +1354,7 @@ class CostAdjustWizard(models.TransientModel):
                                     layers.mapped('quantity')) != 0 else 0
                                 # if layer[3]:
                                 #     print('check',layer[3])
-                                layer.unit_cost = unit_cost
+                                layer.unit_cost = abs(unit_cost)
                                 actual_value = unit_cost * layer.quantity
                                 layer.value = actual_value
                                 layer.account_move_id.button_draft()
@@ -1428,7 +1427,7 @@ class CostAdjustWizard(models.TransientModel):
                                 return_svl = self.env['stock.valuation.layer'].search(
                                     [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                                 print('initial', rl, rl.unit_cost, rl.value)
-                                rl.unit_cost = return_svl.unit_cost
+                                rl.unit_cost = abs(return_svl.unit_cost)
                                 rl.value = return_svl.unit_cost * rl.quantity
                                 print('---->', return_svl)
                                 print('after---->', rl.unit_cost, rl.value)
@@ -1450,7 +1449,7 @@ class CostAdjustWizard(models.TransientModel):
                             layers.mapped('quantity')) != 0 else 0
                         # if layer[3]:
                         #     print('check',layer[3])
-                        layer.unit_cost = unit_cost
+                        layer.unit_cost = abs(unit_cost)
                         actual_value = unit_cost * layer.quantity
                         layer.value = actual_value
                         layer.account_move_id.button_draft()
@@ -1478,7 +1477,7 @@ class CostAdjustWizard(models.TransientModel):
                     return_svl = self.env['stock.valuation.layer'].search(
                         [('stock_move_id', '=', rl.stock_move_id.origin_returned_move_id.id),('blank_type', '!=', 'Landed Cost')])
                     print('initial', rl, rl.unit_cost, rl.value)
-                    rl.unit_cost = return_svl.unit_cost
+                    rl.unit_cost = abs(return_svl.unit_cost)
                     rl.value = return_svl.unit_cost * rl.quantity
                     print('---->', return_svl)
                     print('after---->', rl.unit_cost, rl.value)
