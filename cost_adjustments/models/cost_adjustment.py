@@ -123,7 +123,7 @@ class CostAdjustments(models.Model):
     def _compute_count(self):
         print('compute_count')
         for cost_adjustment in self:
-            print('cost_adjustment_cost_adjustment',cost_adjustment)
+            print('cost_adjustment_cost_adjustment', cost_adjustment)
             count = 0
             from_date = 0
             valuation_layers_all = self.env['stock.valuation.layer'].search(
@@ -198,15 +198,20 @@ class CostAdjustments(models.Model):
                     if round(abs(layer.unit_cost), 2) != round(abs(unit_cost), 2):
                         print('ISSUE--', layer, layer.real_date, layer.unit_cost, abs(unit_cost))
                         count += 1
-                        print('cost_adjustment',cost_adjustment)
+                        print('cost_adjustment', cost_adjustment)
                         if not cost_adjustment.from_date:
                             cost_adjustment.from_date = layer.real_date
 
             cost_adjustment.count = count
             if not cost_adjustment.from_date:
                 cost_adjustment.from_date = False
-            if count==0:
-                cost_adjustment.active=False
+            if count == 0:
+                context = self.env.context
+                context.update({'active_ids': [cost_adjustment.id]})
+                self.env.context = context
+                self.env['cost.adjust.warning'].confirm()
+                cost_adjustment.active = False
+            print('count', count)
 
     def cost_adjustment(self):
         view = self.env.ref('cost_adjustments.adjust_cost_warning_wizard')
@@ -806,6 +811,7 @@ class CostAdjustWarning(models.TransientModel):
 
     def confirm(self):
         cost_adjustments = self.env['cost.adjustments'].search([('id', 'in', self.env.context.get('active_ids'))])
+        print('cost_adjustments', cost_adjustments)
         for cost_adjustment in cost_adjustments:
             valuation_layers_all = self.env['stock.valuation.layer'].search(
                 [('product_id', '=', cost_adjustment.product_id.id), ('state', '=', 'confirm')]).sorted(
