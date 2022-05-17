@@ -206,7 +206,7 @@ class CostAdjustments(models.Model):
             if not cost_adjustment.from_date:
                 cost_adjustment.from_date = False
             if count == 0:
-                context = self.env.context
+                context = self.env.context.copy()
                 context.update({'active_ids': [cost_adjustment.id]})
                 self.env.context = context
                 self.env['cost.adjust.warning'].confirm()

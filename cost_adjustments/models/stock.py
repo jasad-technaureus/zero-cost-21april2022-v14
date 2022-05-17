@@ -182,6 +182,7 @@ class StockValuationLayer(models.Model):
                     [('stock_move_id', '=', svl.stock_move_id.origin_returned_move_id.id),
                      ('blank_type', '!=', 'Landed Cost')])
                 print('return_svl', return_svl)
+                print('UNIT COST......',svl.unit_cost,return_svl.unit_cost)
                 # unit_cost = sum(return_svl.mapped('value')) / sum(return_svl.mapped('quantity'))
                 # print('unit_cost',unit_cost)
                 products = self.env['cost.adjustments'].search(
@@ -252,7 +253,7 @@ class StockValuationLayer(models.Model):
             svl._compute_move_type()
             print('??', svl.account_move_id)
             print('bill_line', bill_line)
-            if svl.stock_move_id.picking_id.purchase_id.invoice_ids:
+            if svl.stock_move_id.picking_id.purchase_id.invoice_ids and svl.stock_move_id._is_in():
                 invoice_line = svl.stock_move_id.picking_id.purchase_id.invoice_ids[0].invoice_line_ids.filtered(
                     lambda x: x.purchase_line_id == svl.stock_move_id.purchase_line_id)
                 print('invoice_line............:::', invoice_line)
