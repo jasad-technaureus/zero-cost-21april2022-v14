@@ -189,6 +189,7 @@ class StockValuationLayer(models.Model):
                 if not products:
                     cost_adjustment = self.env['cost.adjustments'].create(
                         {'product_id': svl.product_id.id})
+                    cost_adjustment._compute_count()
                 if svl.unit_cost != return_svl.unit_cost:
                     svl.unit_cost = abs(return_svl.unit_cost)
                     svl.value = svl.unit_cost * svl.quantity
@@ -568,6 +569,7 @@ class StockLandedCost(models.Model):
             if not products:
                 cost_adjustment = self.env['cost.adjustments'].create(
                     {'product_id': svl.product_id.id})
+                cost_adjustment._compute_count()
         return self.write({'state': 'cancel'})
 
 
@@ -769,8 +771,10 @@ class StockPicking(models.Model):
                             cost_adjustment = self.env['cost.adjustments'].create({'product_id': line.product_id.id,
                                                                                    'is_from_bll': True})
                             cost_adjustment.ca_adjust_confirm()
+                            cost_adjustment._compute_count()
                         else:
                             products.ca_adjust_confirm()
+
                 for line in bill.line_ids:
                     if line.account_id == line.product_id.categ_id.property_stock_account_input_categ_id:
                         move = self.move_lines.filtered(lambda x: x.purchase_line_id == line.purchase_line_id)
@@ -836,6 +840,7 @@ class StockMove(models.Model):
                 if not products:
                     cost_adjustment = self.env['cost.adjustments'].create(
                         {'product_id': layer.product_id.id})
+                    cost_adjustment._compute_count()
                 if layer.account_move_id:
                     layer.account_move_id.button_draft()
                     layer.account_move_id.button_cancel()

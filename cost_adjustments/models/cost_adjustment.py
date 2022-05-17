@@ -205,6 +205,8 @@ class CostAdjustments(models.Model):
             cost_adjustment.count = count
             if not cost_adjustment.from_date:
                 cost_adjustment.from_date = False
+            if count==0:
+                cost_adjustment.active=False
 
     def cost_adjustment(self):
         view = self.env.ref('cost_adjustments.adjust_cost_warning_wizard')
