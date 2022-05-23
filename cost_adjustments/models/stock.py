@@ -252,15 +252,16 @@ class StockValuationLayer(models.Model):
             bill_line = svl.stock_move_id.purchase_line_id
             svl._compute_move_type()
             print('??', svl.account_move_id)
-            print('bill_line', bill_line)
-            if svl.stock_move_id.picking_id.purchase_id.invoice_ids and svl.stock_move_id._is_in():
+            print('bill_line', bill_line,svl.stock_landed_cost_id)
+            if svl.stock_move_id.picking_id.purchase_id.invoice_ids and svl.stock_move_id._is_in() and not svl.stock_landed_cost_id:
                 invoice_line = svl.stock_move_id.picking_id.purchase_id.invoice_ids[0].invoice_line_ids.filtered(
                     lambda x: x.purchase_line_id == svl.stock_move_id.purchase_line_id)
                 print('invoice_line............:::', invoice_line)
                 unit_cost = abs(invoice_line.debit / invoice_line.quantity)
                 svl.unit_cost = abs(unit_cost)
                 svl.value = svl.unit_cost * svl.quantity
-                print('VALUEEE', svl.value)
+                print('VALUEEE', svl.value,unit_cost)
+            print('VALUEEE', svl.value)
         return res
 
 

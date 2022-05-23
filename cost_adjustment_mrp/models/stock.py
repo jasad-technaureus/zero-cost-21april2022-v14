@@ -32,7 +32,7 @@ class StockValuationLayer(models.Model):
     def create(self, vals_list):
         res = super(StockValuationLayer, self).create(vals_list)
         for layer in res:
-            if layer.product_id.is_kit_product:
+            if layer.product_id.is_kit_product and not layer.stock_landed_cost_id:
                 svl_with_same_picking = self.env['stock.valuation.layer'].search(
                     [('transfer_id', '=', layer.transfer_id.id)])
                 print('product...', layer.product_id.name, svl_with_same_picking.mapped('product_id').ids)
@@ -46,7 +46,6 @@ class StockValuationLayer(models.Model):
                 component_svl = svl_with_same_picking.filtered(lambda x: x.product_id.id in bom_products)
                 print('component_svl', component_svl)
                 total_value = sum(component_svl.mapped('value'))
-                total_qty = sum(component_svl.mapped('value'))
                 layer.value = total_value
                 layer.unit_cost = abs(total_value / layer.quantity)
                 print('total_value...', total_value)
